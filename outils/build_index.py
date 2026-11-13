@@ -14,7 +14,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build_explorer import PARTIE_ORDER, ROOT, collect  # noqa: E402
 
-TYPE = {"definition": "concept", "auteur": "auteur", "etude": "étude", "these": "thèse", "refutee": "réfutée"}
+TYPE = {"definition": "concept", "auteur": "auteur", "etude": "étude", "these": "thèse", "refutee": "écartée"}
 ORDER = {"definition": 0, "auteur": 1, "etude": 2, "these": 3, "refutee": 4}
 
 

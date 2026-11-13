@@ -2,7 +2,7 @@
 
 Ce fichier définit l'objectif, la méthode et les conventions du projet. Il s'adresse à l'agent (Claude) et à l'auteur. Tout travail dans ce dépôt doit s'y conformer. Il évolue avec le projet, et toute modification est discutée avec l'auteur.
 
-Projets voisins : le treillis Lordon (`/lordon`, dépôt `treillis-lordon`), dont ce projet reprend l'outillage et les conventions ; Homo Status (`/status`, dépôt `status-and-politics`), qui prend chez Ridgeway ses définitions du statut ; SpinozaGraph (`/spinoza`).
+Projet indépendant, publié parmi les « treillis d'idées » (treillis.qpetit.com), dont il partage l'outillage. Projet voisin par le sujet : Homo Status (`/status`, dépôt `status-and-politics`), qui prend chez Ridgeway ses définitions du statut.
 
 ## 1. Objectif
 
@@ -29,7 +29,7 @@ C'est une **reconstruction, non une critique**. On ne juge pas les thèses, on n
 | `these` | `T` | `theses/` | une thèse de Ridgeway, avec sa démonstration ou son argumentation |
 | `refutee` | `R` | `refutees/` | une position que Ridgeway écarte (la dominance comme fondement, le statut comme vanité, le vernis idéologique de Tilly…), énoncée telle qu'elle la présente |
 
-- Concepts, prémisses et positions réfutées ne s'appuient que sur des concepts et des prémisses. Seules les thèses s'appuient sur des thèses.
+- Concepts, prémisses et positions écartées ne s'appuient que sur des concepts et des prémisses. Seules les thèses s'appuient sur des thèses.
 - Le champ `contre` d'une thèse liste les positions `R` qu'elle écarte. Ces arêtes « contre » n'entrent ni dans le chemin ni dans les conséquences.
 - Les identifiants sont globaux et numérotés dans l'ordre d'apparition dans le livre ; toute renumérotation est répercutée partout.
 
@@ -89,7 +89,7 @@ Exemples et digressions du livre, résumés.
 …
 ```
 
-Concepts et prémisses ont une section `## Chez Ridgeway` (*In Ridgeway*) ; les positions réfutées, `## Telle que Ridgeway la présente` (*As Ridgeway presents it*).
+Concepts et prémisses ont une section `## Chez Ridgeway` (*In Ridgeway*) ; les positions écartées, `## Telle que Ridgeway la présente` (*As Ridgeway presents it*).
 
 `depends_on` correspond exactement aux identifiants invoqués dans la démonstration ou l'argumentation.
 

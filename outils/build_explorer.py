@@ -9,7 +9,7 @@ Bilingue : la version anglaise d'un élément ou d'une partie est dans le même 
 (champs titre_en, enonce_en, resume_en ; corps anglais après la ligne « <!-- en --> ») ;
 celle d'un document NOM.md est dans NOM.en.md.
 
-Adapté de l'explorateur du treillis Lordon (lordon-cds), lui-même repris d'Homo Status.
+Outil commun aux treillis d'idées (treillis.qpetit.com).
 
 Usage :
     python outils/build_explorer.py           # génère explorer.html

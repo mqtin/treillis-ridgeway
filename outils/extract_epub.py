@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Extrait le texte d'un EPUB en un fichier par section, paragraphes numérotés.
+"""Extrait le texte d'un EPUB en un fichier par section, avec la pagination papier.
 
 Le résultat va dans source/texte/ (exclu de Git : le livre est sous droits, AGENT.md § 6).
-Chaque section de la table des matières devient `NN.md`, et chaque paragraphe est préfixé
-par son numéro (`[¶3]`) : c'est le repère `NN.3` utilisé dans le champ `loc` des éléments,
-faute de pagination dans l'EPUB. Les notes sont gardées à la fin de chaque section.
+Chaque section de la table des matières devient `NN.md` ; les sauts de page de l'EPUB
+y sont marqués `[p37]` : ce sont les pages citées dans les éléments, « (p. 37) ». Les
+intertitres des chapitres deviennent des titres `##`, et les paragraphes sont numérotés
+(`[¶3]`) pour s'y retrouver. Les notes sont dans leur propre section.
 
 Usage :
     python -I outils/extract_epub.py source/livre.epub

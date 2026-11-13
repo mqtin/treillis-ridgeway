@@ -20,7 +20,7 @@ The work of other authors (Weber, Goffman, Sewell, Tilly, Blumer, Fiske…) and 
 ## The project
 
 - Reconstruction, translation, tools and explorer: repository author [mqtin](https://github.com/mqtin), 2026, with the help of Claude (Anthropic).
-- The explorer is adapted from those of the Lordon lattice and Homo Status, other projects by the same author (<https://treillis.qpetit.com>).
+- The explorer is the tool shared by the same author's idea lattices (<https://treillis.qpetit.com>).
 - Licences: code under GPL-3.0, reconstruction work (and its translation) under CC BY-SA 4.0, quotations excluded (see `LICENSE`).
 
 **These notices must be kept** in any redistribution of the repository or of `explorer.html`.

@@ -97,7 +97,7 @@ mark { background: var(--hl); color: inherit; padding: 0 1px; }
 #resizer { cursor: col-resize; background: var(--line); opacity: .5; }
 #resizer:hover { opacity: 1; }
 #legend span.dash::before { height: 0; border-top: 2px dashed var(--c); background: none; vertical-align: 3px; }
-/* Marge des parties (reprise de SpinozaGraph) : hors du graphe, ne recouvre jamais les nœuds */
+/* Marge des parties : hors du graphe, ne recouvre jamais les nœuds */
 #gutter { position: absolute; top: 0; bottom: 0; left: 0; width: var(--gut); background: var(--panel); border-right: 1px solid var(--line); overflow: hidden; z-index: 2; }
 .glabel { position: absolute; left: 3px; right: 3px; border-radius: 6px; background: var(--band); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: pointer; }
 .glabel:hover { border-color: var(--ink); }
@@ -308,7 +308,7 @@ for (const e of els) for (const d0 of e.depends_on) {
   if (!parents.get(e.id).includes(d)) parents.get(e.id).push(d);
   children.get(d).push(e.id);
 }
-// Arêtes « contre » : thèse -> position réfutée (hors du graphe des appuis : ni chemin, ni conséquences)
+// Arêtes « contre » : thèse -> position écartée (hors du graphe des appuis : ni chemin, ni conséquences)
 const refutes = new Map(), refutedBy = new Map();
 for (const e of els) { refutes.set(e.id, e.contre.map(resolve)); for (const r of refutes.get(e.id)) (refutedBy.get(r) || refutedBy.set(r, []).get(r)).push(e.id); }
 function closure(start, next) {
@@ -461,8 +461,8 @@ function audit() {
     if (notUsed.length) demo.push(`${pill(e.id)} ${tr("déclare sans invoquer :", "declares without invoking:")} ${notUsed.map(x => pill(x)).join("")}`);
   }
   add(tr("Démonstration ≠ depends_on", "Demonstration ≠ depends_on"), "err", tr("AGENT.md § 5 : depends_on doit correspondre exactement aux éléments invoqués dans la démonstration ou l'argumentation.", "AGENT.md § 5: depends_on must match exactly the elements invoked in the demonstration or argument."), demo);
-  // 4. Concepts, prémisses et positions réfutées ne s'appuient pas sur des thèses
-  add(tr("Dépendances interdites", "Forbidden dependencies"), "warn", tr("AGENT.md § 3 : concepts, prémisses et positions réfutées ne s'appuient que sur des concepts ou des prémisses ; seules les thèses s'appuient sur des thèses.", "AGENT.md § 3: concepts, premises and refuted positions rest only on concepts or premises; only theses rest on theses."),
+  // 4. Concepts, prémisses et positions écartées ne s'appuient pas sur des thèses
+  add(tr("Dépendances interdites", "Forbidden dependencies"), "warn", tr("AGENT.md § 3 : concepts, prémisses et positions écartées ne s'appuient que sur des concepts ou des prémisses ; seules les thèses s'appuient sur des thèses.", "AGENT.md § 3: concepts, premises and rejected positions rest only on concepts or premises; only theses rest on theses."),
     els.flatMap(e => e.type !== "these"
       ? e.depends_on.filter(d => byId.has(resolve(d)) && ["these", "refutee"].includes(typeOf(resolve(d)))).map(d => `${pill(e.id)} (${e.type}) ${tr("dépend de", "depends on")} ${pill(resolve(d))} (${typeOf(resolve(d))})`) : []));
   // 5. Pages
@@ -474,9 +474,9 @@ function audit() {
   add(tr("Citations trop longues", "Quotations too long"), "err", tr("AGENT.md § 6 : une citation tient en une ou deux phrases (300 caractères au plus).", "AGENT.md § 6: a quotation is one or two sentences (300 characters at most)."),
     els.filter(e => e.citation.length > 300).map(e => `${pill(e.id)} : ${e.citation.length} ${tr("caractères", "characters")}`));
   // 8. Arêtes « contre »
-  add(tr("« contre » vers autre chose qu'une position réfutée", "“against” aimed at something other than a refuted position"), "err", tr("AGENT.md § 3 : le champ contre ne vise que des éléments R.", "AGENT.md § 3: the contre field targets only R elements."),
+  add(tr("« contre » vers autre chose qu'une position écartée", "“against” aimed at something other than a rejected position"), "err", tr("AGENT.md § 3 : le champ contre ne vise que des éléments R.", "AGENT.md § 3: the contre field targets only R elements."),
     els.flatMap(e => refutes.get(e.id).filter(r => typeOf(r) !== "refutee").map(r => `${pill(e.id)} ${tr("contre", "against")} ${pill(r)}`)));
-  add(tr("Positions réfutées sans thèse qui les réfute", "Refuted positions with no thesis refuting them"), "warn", tr("Une position R doit être visée par au moins une thèse (champ contre).", "An R position must be targeted by at least one thesis (field contre)."),
+  add(tr("Positions écartées sans thèse qui les écarte", "Rejected positions with no thesis rejecting them"), "warn", tr("Une position R doit être visée par au moins une thèse (champ contre).", "An R position must be targeted by at least one thesis (field contre)."),
     els.filter(e => e.type === "refutee" && !(refutedBy.get(e.id) || []).length).map(e => pill(e.id, true)));
   // 8 bis. Champs requis
   add(tr("Champs manquants ou invalides", "Missing or invalid fields"), "warn", tr("AGENT.md § 5 : type, statut_revision et lien_explicite (thèses) ; une thèse a une Démonstration ou une Argumentation.", "AGENT.md § 5: type, statut_revision and lien_explicite (theses); a thesis has a Démonstration or an Argumentation."),
@@ -558,7 +558,7 @@ function renderFilters() {
   };
 }
 const PART_HINT = () => tr("Clic : seulement cette partie (re-clic : toutes) · Ctrl+clic : ajouter ou retirer", "Click: this part only (click again: all) · Ctrl+click: add or remove");
-// Clic : seulement cette partie (re-clic : toutes) ; Ctrl+clic : ajouter ou retirer (comme SpinozaGraph).
+// Clic : seulement cette partie (re-clic : toutes) ; Ctrl+clic : ajouter ou retirer.
 function setParts(v, add) {
   const all = [...PARTIES, ""];
   if (v === "all") all.forEach(p => state.parties.add(p));
@@ -620,7 +620,7 @@ function visibleSet() {
   }
   return new Set(ids);
 }
-// Une bande horizontale par partie (reprise de SpinozaGraph) ; dans chaque bande, colonnes par profondeur
+// Une bande horizontale par partie ; dans chaque bande, colonnes par profondeur
 // (appuis internes à la partie), colonnes trop hautes coupées ; nœuds sans lien rangés en grille sous la bande.
 // Le nom des parties est dans la marge de gauche (#gutter), jamais sur le graphe.
 const ROWS = 10, HEAD = 22, GAP = 48;
@@ -864,7 +864,7 @@ function renderElement(id) {
       ${chain.length > direct.size ? `<span class="k">${tr("Chemin complet", "Full path")}</span><span><ul class="chain">${chain.map(x => `<li style="padding-left:${dd(x) * 14}px">${pill(x, true)}</li>`).join("")}</ul></span>` : ""}
       <span class="k">${tr("Dépendants", "Dependents")}</span><span>${children.get(id).map(x => pill(x, true)).join("") || "—"}</span>
       ${(refutes.get(id) || []).length ? `<span class="k">${tr("Contre", "Against")}</span><span>${refutes.get(id).map(x => pill(x, true)).join("")}</span>` : ""}
-      ${(refutedBy.get(id) || []).length ? `<span class="k">${tr("Réfutée par", "Refuted by")}</span><span>${refutedBy.get(id).map(x => pill(x, true)).join("")}</span>` : ""}
+      ${(refutedBy.get(id) || []).length ? `<span class="k">${tr("Écartée par", "Rejected by")}</span><span>${refutedBy.get(id).map(x => pill(x, true)).join("")}</span>` : ""}
       ${extra.length ? `<span class="k">${tr("Mentionne aussi", "Also mentions")}</span><span>${extra.map(x => pill(x)).join("")}</span>` : ""}
       ${mb.length ? `<span class="k">${tr("Mentionné par", "Mentioned by")}</span><span>${[...new Set(mb)].map(x => pill(x)).join("")}</span>` : ""}
     </div>

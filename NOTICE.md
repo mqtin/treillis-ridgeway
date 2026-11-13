@@ -20,7 +20,7 @@ Les travaux d'autres auteurs (Weber, Goffman, Sewell, Tilly, Blumer, Fiske…) e
 ## Le projet
 
 - Reconstruction, traduction anglaise, outils et explorateur : auteur du dépôt [mqtin](https://github.com/mqtin), 2026, avec l'aide de Claude (Anthropic).
-- L'explorateur est adapté de celui du treillis Lordon et d'Homo Status, autres projets du même auteur (<https://treillis.qpetit.com>).
+- L'explorateur est l'outil commun aux treillis d'idées du même auteur (<https://treillis.qpetit.com>).
 - Licences : code sous GPL-3.0, travail de reconstruction (et sa traduction) sous CC BY-SA 4.0, citations exclues (voir `LICENSE`).
 
 **Ces mentions doivent être conservées** dans toute redistribution du dépôt ou d'`explorer.html`.

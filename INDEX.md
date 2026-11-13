@@ -105,8 +105,8 @@ Table de tous les éléments, par partie. Chaque ligne : identifiant, type, titr
 | T002 | thèse | Le statut est relationnel, social, donné, consensuel et public | 10-12 | brouillon |
 | T003 | thèse | La hiérarchie de statut, solution bornément fonctionnelle | 7-8, 12-14 | brouillon |
 | T004 | thèse | Statut, pouvoir et richesse sont distincts mais réciproques | 14-16 | brouillon |
-| R01 | réfutée | Le statut, une vanité sociale | 1-2 | brouillon |
-| R02 | réfutée | La fonctionnalité explique les hiérarchies de statut | 13-14, 20 | brouillon |
+| R01 | écartée | Le statut, une vanité sociale | 1-2 | brouillon |
+| R02 | écartée | La fonctionnalité explique les hiérarchies de statut | 13-14, 20 | brouillon |
 
 ## Chapitre 2. Les fondements d'un schème culturel du statut
 
@@ -129,10 +129,10 @@ Table de tous les éléments, par partie. Chaque ligne : identifiant, type, titr
 | T012 | thèse | Le consensus qui gouverne la hiérarchie est de second ordre | 39-42 | brouillon |
 | T013 | thèse | La dominance revisitée : incorporée, rarement victorieuse | 42-44 | brouillon |
 | T014 | thèse | Meneurs et suiveurs : une compétence bornée par l'intention | 44-45 | brouillon |
-| R03 | réfutée | Les hiérarchies humaines reposent sur la dominance | 21-23 | brouillon |
-| R04 | réfutée | Le prestige suffit à expliquer les hiérarchies | 25-26 | brouillon |
-| R05 | réfutée | Les différences individuelles déterminent la hiérarchie | 28 | brouillon |
-| R07 | réfutée | Il faut un consensus de premier ordre | 39, 41-42, 154-155 | brouillon |
+| R03 | écartée | Les hiérarchies humaines reposent sur la dominance | 21-23 | brouillon |
+| R04 | écartée | Le prestige suffit à expliquer les hiérarchies | 25-26 | brouillon |
+| R05 | écartée | Les différences individuelles déterminent la hiérarchie | 28 | brouillon |
+| R07 | écartée | Il faut un consensus de premier ordre | 39, 41-42, 154-155 | brouillon |
 
 ## Chapitre 3. Pourquoi tenons-nous au statut ?
 
@@ -146,8 +146,8 @@ Table de tous les éléments, par partie. Chaque ligne : identifiant, type, titr
 | T019 | thèse | Le statut, désirable et jamais acquis, motive sans fin | 59-61 | brouillon |
 | T020 | thèse | Le schème récompense l'acceptation du bas statut | 61-64 | brouillon |
 | T021 | thèse | La stabilité tient au consensus des autres et aux croyances de statut | 64-67 | brouillon |
-| R06 | réfutée | Le statut se réduit à l'appartenance | 49-50, 58 | brouillon |
-| R13 | réfutée | Le pouvoir est insatiable | 59 | brouillon |
+| R06 | écartée | Le statut se réduit à l'appartenance | 49-50, 58 | brouillon |
+| R13 | écartée | Le pouvoir est insatiable | 59 | brouillon |
 
 ## Chapitre 4. Les croyances de statut et l'organisation de l'inégalité
 
@@ -172,7 +172,7 @@ Table de tous les éléments, par partie. Chaque ligne : identifiant, type, titr
 | T030 | thèse | Deux éléments font naître une croyance de statut | 89-91 | brouillon |
 | T031 | thèse | Le schème s'étend partout où il y a un but et une interdépendance | 91-93 | brouillon |
 | T032 | thèse | L'avantage de statut naît de deux inférences et passe pour du mérite | 94-96 | brouillon |
-| R08 | réfutée | La richesse suffit à expliquer les croyances de statut | 82 | brouillon |
+| R08 | écartée | La richesse suffit à expliquer les croyances de statut | 82 | brouillon |
 
 ## Chapitre 5. La microdynamique du statut
 
@@ -197,8 +197,8 @@ Table de tous les éléments, par partie. Chaque ligne : identifiant, type, titr
 | T042 | thèse | Le rejet frappe qui conteste la hiérarchie des groupes | 118-119 | brouillon |
 | T043 | thèse | Surmonter la généralisation du statut : possible, mais pas juste | 119-120 | brouillon |
 | T044 | thèse | Trois biais s'accumulent sur une vie | 121-123 | brouillon |
-| R10 | réfutée | Le rejet des femmes affirmées sanctionne un manque de douceur | 52, 118 | brouillon |
-| R11 | réfutée | Les écarts entre groupes viennent de différences individuelles préalables | 108 | brouillon |
+| R10 | écartée | Le rejet des femmes affirmées sanctionne un manque de douceur | 52, 118 | brouillon |
+| R11 | écartée | Les écarts entre groupes viennent de différences individuelles préalables | 108 | brouillon |
 
 ## Chapitre 6. Statut, différence et durabilité de l'inégalité
 
@@ -219,8 +219,8 @@ Table de tous les éléments, par partie. Chaque ligne : identifiant, type, titr
 | T053 | thèse | Les croyances de statut légitiment l'inégalité par le mérite | 143-145 | brouillon |
 | T054 | thèse | Le sentiment de position de groupe défend la hiérarchie et divise le bas | 145-147 | brouillon |
 | T055 | thèse | Le déni du statut | 147-149 | brouillon |
-| R09 | réfutée | Le statut, un vernis idéologique après coup | 126-127 | brouillon |
-| R12 | réfutée | Chacun reçoit selon son mérite individuel | 147-148 | brouillon |
+| R09 | écartée | Le statut, un vernis idéologique après coup | 126-127 | brouillon |
+| R12 | écartée | Chacun reçoit selon son mérite individuel | 147-148 | brouillon |
 
 ## Chapitre 7. Conclusion
 
@@ -234,4 +234,5 @@ Table de tous les éléments, par partie. Chaque ligne : identifiant, type, titr
 
 ## Journal
 
-- **2026-11-13.** Création du projet. Livre lu en entier (chapitres 1 à 7, p. 1-164) et reconstruit d'un seul tenant : 32 concepts, 16 prémisses d'auteurs, 54 prémisses d'études, 60 thèses, 13 positions réfutées, en français et en anglais. Outillage repris du treillis Lordon et adapté (repères en pages, types A et E). Toutes les citations anglaises sont dans le livre mot pour mot (`outils/audit_citations.py`). Tous les éléments sont `brouillon` : l'audit de fidélité reste à faire (AGENT.md § 7).
+- **2026-11-13.** Création du projet. Livre lu en entier (chapitres 1 à 7, p. 1-164) et reconstruit d'un seul tenant : 32 concepts, 16 prémisses d'auteurs, 54 prémisses d'études, 60 thèses, 13 positions réfutées, en français et en anglais. Outillage commun aux treillis, adapté au livre (repères en pages, types A et E). Toutes les citations anglaises sont dans le livre mot pour mot (`outils/audit_citations.py`). Tous les éléments sont `brouillon` : l'audit de fidélité reste à faire (AGENT.md § 7).
+- **2026-11-13.** Audit d'indépendance et d'enchaînement. Retrait de toute mention du treillis Lordon et de SpinozaGraph (documents, code, explorateur) ; « positions réfutées » devient « positions écartées ». Enchaînement : 25 liens entre thèses ajoutés, tous faits par Ridgeway elle-même (« as we saw », « recall »), qui manquaient au graphe : de 23 thèses sans appui sur une autre thèse à 10 (points de départ : ouverture du livre, critique de la dominance et du prestige, tension meneurs-suiveurs, début des chapitres 3, 5 et 6), et de 30 thèses sans conséquence à 10 (conclusions et conseils pratiques). Deux renvois corrigés : T058 (la propagation aux objets est T039, non T031) et T053 (p. 144 ne parle que de la chaleur prêtée au bas statut).

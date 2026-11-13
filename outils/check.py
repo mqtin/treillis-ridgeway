@@ -81,7 +81,7 @@ def main() -> int:
             if r not in by_id:
                 errors.append(f"{eid} contre {r}, qui n'existe pas")
             elif by_id[r]["type"] != "refutee":
-                errors.append(f"{eid} contre {r}, qui n'est pas une position réfutée")
+                errors.append(f"{eid} contre {r}, qui n'est pas une position écartée")
         if t == "these":
             if not isinstance(e["lien_explicite"], bool):
                 warnings.append(f"{eid} : lien_explicite absent")
@@ -119,7 +119,7 @@ def main() -> int:
 
     for r in (e for e in els if e["type"] == "refutee"):
         if not any(r["id"] in e["contre"] for e in els):
-            warnings.append(f"{r['id']} : aucune thèse ne la réfute")
+            warnings.append(f"{r['id']} : aucune thèse ne l'écarte")
 
     # Cycles
     state = {}
