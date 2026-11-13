@@ -42,7 +42,7 @@ PARTIE_ORDER = ["P", "1", "2", "3", "4", "5", "6", "7"]
 
 ID_PATTERN = r"[DAETR]\d{2,3}(?:-C\d+)?"
 ID_RE = re.compile(rf"\b({ID_PATTERN})\b")
-EN_MARK = re.compile(r"^<!--\s*en\s*-->\s*$", re.M)
+LANG_MARK = re.compile(r"^<!--\s*(en|de)\s*-->\s*$", re.M)
 FRONT_RE = re.compile(r"\A---\s*\n(.*?)\n---\s*\n?(.*)\Z", re.S)
 
 
@@ -65,10 +65,13 @@ def as_list(value):
     return [s.strip() for s in str(value).split(",") if s.strip()]
 
 
-def split_lang(body: str):
-    """Corps français, corps anglais (après la ligne <!-- en -->)."""
-    parts = EN_MARK.split(body, maxsplit=1)
-    return parts[0].strip(), (parts[1].strip() if len(parts) > 1 else "")
+def split_lang(body: str, with_de: bool = False):
+    """Corps français, anglais (après <!-- en -->) et, si demandé, allemand (après <!-- de -->)."""
+    parts = LANG_MARK.split(body)
+    out = {"fr": parts[0].strip(), "en": "", "de": ""}
+    for i in range(1, len(parts) - 1, 2):
+        out[parts[i]] = parts[i + 1].strip()
+    return (out["fr"], out["en"], out["de"]) if with_de else (out["fr"], out["en"])
 
 
 def sections(body: str) -> dict:
@@ -97,8 +100,9 @@ def load_parties():
             if "_yaml_error" in meta:
                 print(f"Attention : YAML invalide dans {p.name} : {meta['_yaml_error']}", file=sys.stderr)
             pid = str(meta.get("id") or p.stem)
-            fr, en = split_lang(body)
+            fr, en, de = split_lang(body, True)
             out.append({"id": pid, "titre": meta.get("titre") or "", "resume": meta.get("resume") or "",
+                        "titre_de": meta.get("titre_de") or "", "resume_de": " ".join(str(meta.get("resume_de") or "").split()), "body_de": de,
                         "titre_en": meta.get("titre_en") or "", "resume_en": " ".join(str(meta.get("resume_en") or "").split()),
                         "loc": meta.get("loc") or "",
                         "body": fr, "body_en": en, "file": p.relative_to(ROOT).as_posix()})
@@ -115,7 +119,7 @@ def load_elements():
         for path in sorted(folder.glob("*.md")):
             text = path.read_text(encoding="utf-8")
             meta, body = split_front_matter(text)
-            body, body_en = split_lang(body) if meta is not None else (body, "")
+            body, body_en, body_de = split_lang(body, True) if meta is not None else (body, "", "")
             rel = path.relative_to(ROOT).as_posix()
             if meta is None:
                 problems.append({"kind": "frontmatter", "file": rel, "msg": "Pas de front-matter YAML."})
@@ -141,6 +145,12 @@ def load_elements():
                 "enonce": " ".join(str(enonce).split()),
                 "titre_en": meta.get("titre_en") or "",
                 "enonce_en": " ".join(str(meta.get("enonce_en") or "").split()),
+                "titre_de": meta.get("titre_de") or "",
+                "enonce_de": " ".join(str(meta.get("enonce_de") or "").split()),
+                "body_de": body_de,
+                "sections_de": list(sections(body_de).keys()),
+                "demo_refs_de": sorted(set(ID_RE.findall(" ".join(v for k, v in sections(body_de).items()
+                                                                    if k in ("Beweis", "Argumentation"))))),
                 "citation": " ".join(str(citation).split()),
                 "pages": [int(x) for x in as_list(meta.get("pages")) if x.isdigit()],
                 "depends_on": as_list(meta.get("depends_on")),
@@ -168,8 +178,10 @@ def load_documents():
         if p.exists():
             # Pas de « mentions » : AGENT.md et INDEX.md citent des identifiants en exemple ou en liste.
             en = p.with_name(p.stem + ".en.md")
+            de = p.with_name(p.stem + ".de.md")
             docs.append({"name": name, "kind": "projet", "body": p.read_text(encoding="utf-8"),
-                         "body_en": en.read_text(encoding="utf-8") if en.exists() else ""})
+                         "body_en": en.read_text(encoding="utf-8") if en.exists() else "",
+                         "body_de": de.read_text(encoding="utf-8") if de.exists() else ""})
     return docs
 
 
@@ -208,7 +220,7 @@ def build() -> Path:
 
 
 def snapshot():
-    files = [ROOT / n for n in DOC_FILES] + [ROOT / n.replace(".md", ".en.md") for n in DOC_FILES] + [TEMPLATE]
+    files = [ROOT / n for n in DOC_FILES] + [ROOT / n.replace(".md", ".en.md") for n in DOC_FILES] + [ROOT / n.replace(".md", ".de.md") for n in DOC_FILES] + [TEMPLATE]
     for d in ELEMENT_DIRS + [PARTIE_DIR]:
         if (ROOT / d).is_dir():
             files += list((ROOT / d).glob("*.md"))

@@ -8,7 +8,7 @@ C'est une reconstruction, pas une critique ni une reproduction : les énoncés r
 
 ## Utilisation
 
-Ouvrir `explorer.html` dans un navigateur : le fichier est autonome et fonctionne hors ligne. Il est **bilingue** : un bouton FR / EN en haut à droite (ou `?lang=en` dans l'adresse) bascule toute l'interface et tous les textes.
+Ouvrir `explorer.html` dans un navigateur : le fichier est autonome et fonctionne hors ligne. Il est **trilingue** : un bouton FR / EN / DE en haut à droite (ou `?lang=en`, `?lang=de` dans l'adresse) bascule toute l'interface et tous les textes.
 
 Pour entrer dans le livre : un **parcours de lecture** en seize étapes (`PARCOURS.md`), une vue des **trois ordres de croyance** (ce que je pense, ce que je pense que les autres pensent, ce que pense « la plupart des gens ») et une vue du **cycle du micro au macro** (de l'interaction à l'inégalité durable, et retour).
 
@@ -47,3 +47,5 @@ Code sous GPL-3.0 ; travail de reconstruction (et sa traduction) sous CC BY-SA 4
 ## In English
 
 Cecilia L. Ridgeway's *Status: Why Is It Everywhere? Why Does It Matter?* (2019), reconstructed in geometrical order as an explorable graph: the premises she takes from other authors and studies, her concepts and theses chapter by chapter, and the positions she rejects. Written in French with a full English version: open `explorer.html` and click EN, or add `?lang=en`. Paraphrase and short quotations only; the book's text is not distributed. To read Ridgeway, read Ridgeway.
+
+**Deutsch.** Cecilia L. Ridgeways *Status: Why Is It Everywhere? Why Does It Matter?* (2019) als erkundbarer Graph in geometrischer Ordnung rekonstruiert. Auf Französisch verfasst, mit englischer und deutscher Fassung: `explorer.html` öffnen und DE anklicken oder `?lang=de` anhängen. Nur Paraphrasen und kurze Zitate; der Text des Buches wird nicht verbreitet. Wer Ridgeway lesen will, lese Ridgeway.

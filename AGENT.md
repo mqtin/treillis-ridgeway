@@ -39,7 +39,7 @@ C'est une **reconstruction, non une critique**. On ne juge pas les thèses, on n
 AGENT.md          ce fichier
 README.md
 PARCOURS.md       parcours de lecture : un fil de seize étapes, de la question du livre à sa conclusion
-PARCOURS.en.md    sa version anglaise ; de même NOTICE.en.md (§ 5 bis)
+PARCOURS.en.md    sa version anglaise ; de même NOTICE.en.md (§ 5 bis) ; PARCOURS.de.md, NOTICE.de.md en allemand (§ 5 ter)
 INDEX.md          table de tous les éléments (générée), plan, journal
 parties/          P (prémisses), 1 à 7 (chapitres) : titre, pages, résumé
 definitions/      D01.md …
@@ -95,6 +95,8 @@ Concepts et prémisses ont une section `## Chez Ridgeway` (*In Ridgeway*) ; les 
 
 **§ 5 bis. Version anglaise.** Chaque élément et chaque partie a sa version anglaise dans le même fichier : `titre_en`, `enonce_en` (ou `resume_en`) dans le front-matter, et, après une ligne `<!-- en -->`, le corps anglais. Il garde les mêmes étapes, les mêmes identifiants et les mêmes repères que le français, ce que `check.py` vérifie. Le livre étant en anglais, les mots de Ridgeway y sont cités tels quels entre guillemets droits ; dans le corps français, ils sont soit cités en anglais, soit traduits par nous entre « ». Un document `NOM.md` a sa version dans `NOM.en.md`. Toute correction du français se reporte dans l'anglais.
 
+**§ 5 ter. Version allemande.** Sur le même modèle, chaque élément et chaque partie a sa version allemande : `titre_de`, `enonce_de` (ou `resume_de`), et, après une ligne `<!-- de -->` placée après le corps anglais, le corps allemand, avec les sections `## Beweis` (ou `## Argumentation`), `## Anmerkung`, `## Bei Ridgeway`, `## Wie Ridgeway sie darstellt`. Il garde les mêmes étapes, les mêmes identifiants et les mêmes repères (pages en « (S. 37) »), ce que `check.py` vérifie. Il traduit la reconstruction, sans recourir à une traduction publiée du livre ; les mots de Ridgeway y sont rendus brièvement par nous entre guillemets allemands („…“). Un document `NOM.md` a sa version dans `NOM.de.md`. Toute correction du français se reporte dans l'anglais et dans l'allemand.
+
 ## 6. Droits et texte source
 
 Le livre est sous droits (© Russell Sage Foundation, 2019).
@@ -114,7 +116,7 @@ Le livre est sous droits (© Russell Sage Foundation, 2019).
 
 ## 8. Contrôles
 
-`python outils/check.py` vérifie : identifiants et types, pages présentes et concordantes avec le corps, longueur des citations, existence des dépendances, absence de cycle, concordance entre `depends_on` et la démonstration, arêtes `contre` vers des `R`, cohérence avec `INDEX.md`, exclusion de `source/`, complétude et concordance de la version anglaise (§ 5 bis). L'onglet « Audit » de l'explorateur affiche les mêmes contrôles.
+`python outils/check.py` vérifie : identifiants et types, pages présentes et concordantes avec le corps, longueur des citations, existence des dépendances, absence de cycle, concordance entre `depends_on` et la démonstration, arêtes `contre` vers des `R`, cohérence avec `INDEX.md`, exclusion de `source/`, complétude et concordance des versions anglaise et allemande (§ 5 bis et 5 ter). L'onglet « Audit » de l'explorateur affiche les mêmes contrôles.
 
 `python outils/audit_citations.py` vérifie les citations contre le livre ; `python outils/audit_pages.py` vérifie, page par page, que chaque citation (y compris les passages anglais du corps français), chaque auteur nommé dans une prémisse et chaque chiffre se trouvent aux pages citées (les deux demandent `source/texte/`).
 
@@ -122,4 +124,4 @@ Aucun de ces contrôles ne remplace l'audit de fidélité.
 
 ## 9. Style
 
-Le style est celui des projets voisins : phrases courtes, vocabulaire précis, pas de jargon ajouté. Le texte est écrit en français, avec sa version anglaise.
+Le style est celui des projets voisins : phrases courtes, vocabulaire précis, pas de jargon ajouté. Le texte est écrit en français, avec ses versions anglaise et allemande.

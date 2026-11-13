@@ -13,9 +13,11 @@
 <meta property="og:url" content="https://treillis.qpetit.com/ridgeway/">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:locale:alternate" content="en_GB">
+<meta property="og:locale:alternate" content="de_DE">
 <link rel="canonical" href="https://treillis.qpetit.com/ridgeway/">
 <link rel="alternate" hreflang="fr" href="https://treillis.qpetit.com/ridgeway/?lang=fr">
 <link rel="alternate" hreflang="en" href="https://treillis.qpetit.com/ridgeway/?lang=en">
+<link rel="alternate" hreflang="de" href="https://treillis.qpetit.com/ridgeway/?lang=de">
 <link rel="alternate" hreflang="x-default" href="https://treillis.qpetit.com/ridgeway/">
 <style>
 :root {
@@ -218,7 +220,7 @@ mark { background: var(--hl); color: inherit; padding: 0 1px; }
     </div>
     <div id="trail"></div>
     <span class="meta" id="meta"></span>
-    <div class="langsw" role="group" aria-label="Langue / Language"><button data-lang="fr" title="Français">FR</button><button data-lang="en" title="English">EN</button></div>
+    <div class="langsw" role="group" aria-label="Langue / Language"><button data-lang="fr" title="Français">FR</button><button data-lang="en" title="English">EN</button><button data-lang="de" title="Deutsch">DE</button></div>
   </header>
   <aside id="side">
     <input id="search" type="search" placeholder="Rechercher (id, titre, texte) — touche /" autocomplete="off">
@@ -251,20 +253,163 @@ const DATA = /*__DATA__*/null;
 
 // ---------- Langue ----------
 // Préférence partagée avec l'accueil du site (clé treillis-lang) ; ?lang=en dans l'URL l'emporte.
-const LANGS = ["fr", "en"];
+const LANGS = ["fr", "en", "de"];
 let LANG = (() => {
   const q = new URLSearchParams(location.search).get("lang");
   if (LANGS.includes(q)) return q;
   try { const s = localStorage.getItem("treillis-lang"); if (LANGS.includes(s)) return s; } catch {}
-  return (navigator.language || "fr").toLowerCase().startsWith("fr") ? "fr" : "en";
+  const n = (navigator.language || "fr").toLowerCase(); return n.startsWith("fr") ? "fr" : n.startsWith("de") ? "de" : "en";
 })();
-const tr = (fr, en) => LANG === "en" ? en : fr;
+// Deutsche Oberfläche : Übersetzungen der englischen Beschriftungen (Schlüssel = englischer Text).
+const DE = {
+  "A concept or premise with no dependent may be superfluous.": "Ein Begriff oder eine Prämisse ohne Folgeelement ist vielleicht überflüssig.",
+  "AGENT.md § 2.2: no circular dependency.": "AGENT.md § 2.2: keine zirkuläre Abhängigkeit.",
+  "AGENT.md § 2: every claim points to a page of the book (field pages).": "AGENT.md § 2: Jede Behauptung verweist auf eine Seite des Buches (Feld pages).",
+  "AGENT.md § 2: every claim points to a passage of the book (loc: section.paragraph).": "AGENT.md § 2: Jede Behauptung verweist auf eine Stelle des Buches (loc: Abschnitt.Absatz).",
+  "AGENT.md § 3: an S premise points to the Ethics (field ethique, e.g. 3p6) or to another work (field ref, e.g. Traité politique, III, 8).": "AGENT.md § 3: Eine S-Prämisse verweist auf die Ethik (Feld ethique, z. B. 3p6) oder auf ein anderes Werk (Feld ref, z. B. Traité politique, III, 8).",
+  "AGENT.md § 3: concepts, premises and refuted positions rest only on concepts or premises; only theses rest on theses.": "AGENT.md § 3: Begriffe, Prämissen und widerlegte Positionen stützen sich nur auf Begriffe oder Prämissen; nur Thesen stützen sich auf Thesen.",
+  "AGENT.md § 3: concepts, premises and rejected positions rest only on concepts or premises; only theses rest on theses.": "AGENT.md § 3: Begriffe, Prämissen und verworfene Positionen stützen sich nur auf Begriffe oder Prämissen; nur Thesen stützen sich auf Thesen.",
+  "AGENT.md § 3: the contre field targets only R elements.": "AGENT.md § 3: Das Feld contre zielt nur auf R-Elemente.",
+  "AGENT.md § 4: INDEX.md is updated on every addition, change or removal.": "AGENT.md § 4: INDEX.md wird bei jeder Ergänzung, Änderung oder Entfernung aktualisiert.",
+  "AGENT.md § 5: depends_on must match exactly the elements invoked in the demonstration or argument.": "AGENT.md § 5: depends_on muss genau den im Beweis oder in der Argumentation angeführten Elementen entsprechen.",
+  "AGENT.md § 5: type, statut_revision and lien_explicite (theses); a thesis has a Démonstration or an Argumentation.": "AGENT.md § 5: type, statut_revision und lien_explicite (Thesen); eine These hat einen Beweis (Démonstration) oder eine Argumentation.",
+  "AGENT.md § 6: a quotation is one or two sentences (300 characters at most).": "AGENT.md § 6: Ein Zitat umfasst ein oder zwei Sätze (höchstens 300 Zeichen).",
+  "Against": "Gegen",
+  "All": "Alles",
+  "All parts": "Alle Teile",
+  "Also mentions": "Erwähnt außerdem",
+  "An R position must be targeted by at least one thesis (field contre).": "Eine R-Position muss von mindestens einer These angegriffen werden (Feld contre).",
+  "Automatic audit": "Automatische Prüfung",
+  "Back (Alt+←)": "Zurück (Alt+←)",
+  "Because the hierarchy and beliefs rest on the second and third orders, one can act on a belief one does not endorse, and thereby make it last. When personal endorsement declines without everyone knowing it, a fragile “pluralistic ignorance” sets in: that is how beliefs change (p. 71-72, 142-143).": "Weil Hierarchie und Überzeugungen auf der zweiten und dritten Ordnung beruhen, kann man nach einer Überzeugung handeln, die man nicht teilt, und sie gerade dadurch fortbestehen lassen. Schwindet die persönliche Zustimmung, ohne dass alle es wissen, entsteht eine fragile „pluralistische Ignoranz“: So ändern sich Überzeugungen (S. 71-72, 142-143).",
+  "Capitalisme, désir et servitude (Willing Slaves of Capital) — lattice": "Capitalisme, désir et servitude — Gitter",
+  "Chapter ": "Kapitel ",
+  "Cited by": "Zitiert von",
+  "Click: this part only (click again: all) · Ctrl+click: add or remove": "Klick: nur dieser Teil (erneuter Klick: alle) · Strg+Klick: hinzufügen oder entfernen",
+  "Concepts and premises nothing uses": "Begriffe und Prämissen, die nichts verwendet",
+  "Consequences": "Folgen",
+  "Decomposition of the enlisted conatus along the master-desire": "Zerlegung des eingespannten Conatus entlang des Herrenbegehrens",
+  "Demonstration ≠ depends_on": "Beweis ≠ depends_on",
+  "Dependencies on a missing element": "Abhängigkeiten von einem fehlenden Element",
+  "Dependencies reconstructed to connect; Lordon does not make them explicitly": "Zur Verbindung rekonstruierte Abhängigkeiten; Lordon stellt sie nicht ausdrücklich her",
+  "Dependencies reconstructed to connect; Ridgeway does not make them explicitly": "Zur Verbindung rekonstruierte Abhängigkeiten; Ridgeway stellt sie nicht ausdrücklich her",
+  "Dependency cycles": "Abhängigkeitszyklen",
+  "Dependents": "Folgeelemente",
+  "Depends on": "Stützt sich auf",
+  "Document not found.": "Dokument nicht gefunden.",
+  "Documents": "Dokumente",
+  "Drag to resize": "Ziehen, um die Größe zu ändern",
+  "Each element has titre_en, enonce_en and an English body after <!-- en -->, invoking the same elements as the French body.": "Jedes Element hat titre_en, enonce_en und einen englischen Text nach <!-- en --> sowie titre_de, enonce_de und einen deutschen Text nach <!-- de -->, die dieselben Elemente anführen wie der französische Text.",
+  "Elements": "Elemente",
+  "Elements of this part": "Elemente dieses Teils",
+  "Elements without a locator": "Elemente ohne Fundstelle",
+  "Ethics": "Ethik",
+  "Expected format: 08.4 (section 08 of sections.yaml, paragraph 4).": "Erwartetes Format: 08.4 (Abschnitt 08 aus sections.yaml, Absatz 4).",
+  "Expected format: SpinozaGraph ids (1def3, 3p6, 3p9sc, 4p37sc2, 3ad1…).": "Erwartetes Format: Kennungen von SpinozaGraph (1def3, 3p6, 3p9sc, 4p37sc2, 3ad1…).",
+  "Figure: the angle α": "Abbildung: der Winkel α",
+  "Fit": "Einpassen",
+  "Fit (key F)": "Einpassen (Taste F)",
+  "Flagged by the audit": "Von der Prüfung gemeldet",
+  "Forbidden dependencies": "Unzulässige Abhängigkeiten",
+  "Foreword": "Vorwort",
+  "Forward (Alt+→)": "Vor (Alt+→)",
+  "From micro to macro": "Von der Mikro- zur Makroebene",
+  "From micro to macro, and back": "Von der Mikro- zur Makroebene und zurück",
+  "Full path": "Vollständiger Pfad",
+  "Hide the graph to read (key R)": "Graph zum Lesen ausblenden (Taste R)",
+  "History": "Verlauf",
+  "INDEX.md ↔ files consistency": "Übereinstimmung INDEX.md ↔ Dateien",
+  "Ids cited in the body but not declared as dependencies (cross-references, anticipations…). To be reread, not necessarily an error.": "Im Text genannte, aber nicht als Abhängigkeit erklärte Kennungen (Querverweise, Vorgriffe…). Zu überprüfen, nicht unbedingt ein Fehler.",
+  "Lordon makes these links himself": "Lordon stellt diese Verbindungen selbst her",
+  "Lordon's vector model (13.3-13.7, 14.1, 39.5). The master-desire is a vector <b>D</b>; each enlisted conatus, a vector <b>d</b>. Only the component of <b>d</b> parallel to <b>D</b>, of length |d| cos α, serves the master-desire; the orthogonal component, |d| sin α, escapes it.": "Lordons Vektormodell (13.3-13.7, 14.1, 39.5). Das Herrenbegehren ist ein Vektor <b>D</b>, jeder eingespannte Conatus ein Vektor <b>d</b>. Nur die zu <b>D</b> parallele Komponente von <b>d</b>, der Länge |d| cos α, dient dem Herrenbegehren; die orthogonale Komponente, |d| sin α, entgeht ihm.",
+  "Malformed locators": "Fehlerhafte Fundstellen",
+  "Malformed references to the Ethics": "Fehlerhafte Verweise auf die Ethik",
+  "Mechanical checks (AGENT.md § 8). They do not replace the fidelity audit: each element reread against the passage cited.": "Mechanische Prüfungen (AGENT.md § 8). Sie ersetzen nicht die Treueprüfung: jedes Element am angeführten Text nachgelesen.",
+  "Mentioned by": "Erwähnt von",
+  "Mentions in the text outside depends_on": "Erwähnungen im Text außerhalb von depends_on",
+  "Missing element": "Fehlendes Element",
+  "Missing front matter or invalid YAML.": "Front Matter fehlt oder YAML ungültig.",
+  "Missing or incomplete English translation": "Fehlende oder unvollständige Übersetzung",
+  "Missing or invalid fields": "Fehlende oder ungültige Felder",
+  "No element to show with these filters.": "Mit diesen Filtern ist kein Element anzuzeigen.",
+  "No part": "Ohne Teil",
+  "Open in the Ethics (SpinozaGraph)": "In der Ethik öffnen (SpinozaGraph)",
+  "Overview": "Überblick",
+  "Pages of the print edition (Russell Sage Foundation, 2019)": "Seiten der Druckausgabe (Russell Sage Foundation, 2019)",
+  "Pages outside the text": "Seiten außerhalb des Textes",
+  "Part not found.": "Teil nicht gefunden.",
+  "Path to": "Pfad zu",
+  "Premises": "Prämissen",
+  "Project document": "Projektdokument",
+  "Quotations too long": "Zu lange Zitate",
+  "Read": "Lesen",
+  "Reading path": "Lesepfad",
+  "Reference to a missing element": "Verweis auf ein fehlendes Element",
+  "Refuted by": "Widerlegt von",
+  "Refuted positions with no thesis refuting them": "Widerlegte Positionen ohne widerlegende These",
+  "Regimes of affects": "Affektregime",
+  "Rejected by": "Verworfen von",
+  "Rejected positions with no thesis rejecting them": "Verworfene Positionen ohne verwerfende These",
+  "Ridgeway makes these links herself": "Ridgeway stellt diese Verbindungen selbst her",
+  "Ridgeway's words": "Ridgeways Worte",
+  "Search (id, title, text) — key /": "Suchen (Kennung, Titel, Text) — Taste /",
+  "Share captured by the master-desire:": "Vom Herrenbegehren vereinnahmter Anteil:",
+  "Spinoza premises without a reference": "Spinoza-Prämissen ohne Verweis",
+  "Status": "Status",
+  "Status (Ridgeway) — lattice": "Status (Ridgeway) — Gitter",
+  "Status beliefs change when their appearance of consensus erodes and the competence differences they imply narrow; individuals can also overcome a disadvantage, but not on equal terms (p. 119-120, 142-143, 162-163).": "Statusüberzeugungen ändern sich, wenn ihr Anschein von Konsens schwindet und die Kompetenzunterschiede, die sie unterstellen, kleiner werden; Einzelne können einen Nachteil auch überwinden, aber nicht unter gleichen Bedingungen (S. 119-120, 142-143, 162-163).",
+  "The angle α": "Der Winkel α",
+  "The book’s mainspring: status does not rest on what each person thinks, but on what each thinks others think. Ridgeway distinguishes three levels.": "Die Triebfeder des Buches: Status beruht nicht darauf, was jeder denkt, sondern darauf, was jeder denkt, dass die anderen denken. Ridgeway unterscheidet drei Ebenen.",
+  "The book’s path, from interaction in a group to the structure of inequality, and the return that makes this inequality durable.": "Der Weg des Buches, von der Interaktion in einer Gruppe zur Struktur der Ungleichheit, und der Rückweg, der diese Ungleichheit dauerhaft macht.",
+  "The main text runs from page 1 to page 164.": "Der Haupttext reicht von Seite 1 bis Seite 164.",
+  "The three orders of belief": "Die drei Ordnungen der Überzeugung",
+  "Theses with reconstructed links": "Thesen mit rekonstruierten Verbindungen",
+  "This id is cited as a dependency but no file defines it.": "Diese Kennung wird als Abhängigkeit angeführt, aber keine Datei definiert sie.",
+  "Unreadable files": "Unlesbare Dateien",
+  "Where the cycle can break": "Wo der Kreislauf brechen kann",
+  "Why it matters": "Warum das wichtig ist",
+  "against": "gegen",
+  "characters": "Zeichen",
+  "declares without invoking:": "erklärt, ohne anzuführen:",
+  "depends on": "stützt sich auf",
+  "depends_on names an id with no file.": "depends_on nennt eine Kennung ohne Datei.",
+  "explicit": "ausdrücklich",
+  "invokes without declaring:": "führt an, ohne zu erklären:",
+  "key": "Taste",
+  "lien_explicite: false — Lordon does not make the link himself; to be checked against the text.": "lien_explicite: false — Lordon stellt die Verbindung nicht selbst her; am Text zu prüfen.",
+  "lien_explicite: false — Ridgeway does not make the link herself; to be checked against the text.": "lien_explicite: false — Ridgeway stellt die Verbindung nicht selbst her; am Text zu prüfen.",
+  "links": "Verbindungen",
+  "listed in INDEX.md with no file and no declaration in a parent file": "in INDEX.md aufgeführt, ohne Datei und ohne Erklärung in einer übergeordneten Datei",
+  "mentions": "Erwähnungen",
+  "missing": "fehlt",
+  "missing element": "fehlendes Element",
+  "missing from INDEX.md": "fehlt in INDEX.md",
+  "ordinary drift": "gewöhnliche Abweichung",
+  "perpendicular": "senkrecht",
+  "reconstructed": "rekonstruiert",
+  "referenced but missing": "angeführt, aber fehlend",
+  "references": "Verweise",
+  "review": "Prüfung",
+  "α = 0: complete alignment": "α = 0: vollständige Ausrichtung",
+  "“against” aimed at something other than a refuted position": "„gegen“ zielt auf etwas anderes als eine widerlegte Position",
+  "“against” aimed at something other than a rejected position": "„gegen“ zielt auf etwas anderes als eine verworfene Position",
+  "Neighbours": "Nachbarn",
+  "Whole graph; the selection highlights its grounds and consequences": "Ganzer Graph; die Auswahl hebt ihre Stützen und Folgen hervor",
+  "Only the path leading to the selected element": "Nur der Pfad, der zum ausgewählten Element führt",
+  "Only what follows from the selected element": "Nur was aus dem ausgewählten Element folgt",
+  "Direct neighbours": "Direkte Nachbarn",
+  "This project document is only available in French.": "Dieses Projektdokument gibt es nur auf Französisch.",
+};
+DE["Missing or incomplete translation (English or German)"] = "Fehlende oder unvollständige Übersetzung (Englisch oder Deutsch)";
+DE["Each element has titre_en, enonce_en and an English body after <!-- en -->, and titre_de, enonce_de and a German body after <!-- de -->, invoking the same elements as the French body."] = "Jedes Element hat titre_en, enonce_en und einen englischen Text nach <!-- en --> sowie titre_de, enonce_de und einen deutschen Text nach <!-- de -->, die dieselben Elemente anführen wie der französische Text.";
+// tr(fr, en[, de]) : sans allemand explicite, on cherche la traduction de l'anglais dans DE.
+const tr = (fr, en, de) => LANG === "fr" ? fr : LANG === "en" ? en : de !== undefined ? de : (typeof en === "string" && DE[en] !== undefined ? DE[en] : en);
 // Champs traduits : on garde l'original (_fr) et on bascule titre / enonce / body selon la langue.
 const I18N_FIELDS = ["titre", "enonce", "body", "resume"];
 function swapLang(o) {
   for (const k of I18N_FIELDS) if (k in o) {
     if (!(k + "_fr" in o)) o[k + "_fr"] = o[k];
-    o[k] = LANG === "en" && o[k + "_en"] ? o[k + "_en"] : o[k + "_fr"];
+    o[k] = LANG !== "fr" && o[k + "_" + LANG] ? o[k + "_" + LANG] : o[k + "_fr"];
   }
 }
 function applyData() {
@@ -280,10 +425,12 @@ const TYPES = ["definition", "auteur", "etude", "these", "refutee"];
 let TYPE_LABEL, TYPE_SING, STATUT_LABEL;
 function setLabels() {
   TYPE_LABEL = tr({ definition: "Concepts", auteur: "Prémisses : auteurs", etude: "Prémisses : études", these: "Thèses", refutee: "Positions écartées", manquant: "Manquant" },
-                  { definition: "Concepts", auteur: "Premises: authors", etude: "Premises: studies", these: "Theses", refutee: "Rejected positions", manquant: "Missing" });
+                  { definition: "Concepts", auteur: "Premises: authors", etude: "Premises: studies", these: "Theses", refutee: "Rejected positions", manquant: "Missing" },
+                  { definition: "Begriffe", auteur: "Prämissen: Autoren", etude: "Prämissen: Studien", these: "Thesen", refutee: "Verworfene Positionen", manquant: "Fehlend" });
   TYPE_SING = tr({ definition: "Concept", auteur: "Prémisse (auteur)", etude: "Prémisse (étude)", these: "Thèse", refutee: "Position écartée", manquant: "Référence manquante" },
-                 { definition: "Concept", auteur: "Premise (author)", etude: "Premise (study)", these: "Thesis", refutee: "Rejected position", manquant: "Missing reference" });
-  STATUT_LABEL = tr({ brouillon: "brouillon", "verifie-texte": "vérifié sur le texte" }, { brouillon: "draft", "verifie-texte": "checked against the text" });
+                 { definition: "Concept", auteur: "Premise (author)", etude: "Premise (study)", these: "Thesis", refutee: "Rejected position", manquant: "Missing reference" },
+                 { definition: "Begriff", auteur: "Prämisse (Autor)", etude: "Prämisse (Studie)", these: "These", refutee: "Verworfene Position", manquant: "Fehlender Verweis" });
+  STATUT_LABEL = tr({ brouillon: "brouillon", "verifie-texte": "vérifié sur le texte" }, { brouillon: "draft", "verifie-texte": "checked against the text" }, { brouillon: "Entwurf", "verifie-texte": "am Text geprüft" });
 }
 setLabels();
 const STATUTS = ["brouillon", "verifie-texte"];
@@ -504,11 +651,12 @@ function audit() {
   add(tr("Mentions dans le texte hors depends_on", "Mentions in the text outside depends_on"), "info", tr("Identifiants cités dans le corps mais non déclarés comme dépendances (renvois, anticipations…). À relire, pas forcément une erreur.", "Ids cited in the body but not declared as dependencies (cross-references, anticipations…). To be reread, not necessarily an error."),
     els.flatMap(e => { const x = e.mentions.map(resolve).filter(m => m !== e.id && !e.depends_on.includes(m)); return x.length ? [`${pill(e.id)} ${tr("mentionne", "mentions")} ${[...new Set(x)].map(y => pill(y)).join("")}`] : []; }));
   // 12 bis. Version anglaise
-  add(tr("Traduction anglaise manquante ou incomplète", "Missing or incomplete English translation"), "warn", tr("Chaque élément a titre_en, enonce_en et un corps anglais après <!-- en -->, qui invoque les mêmes éléments que le corps français.", "Each element has titre_en, enonce_en and an English body after <!-- en -->, invoking the same elements as the French body."),
+  add(tr("Traduction manquante ou incomplète (anglais ou allemand)", "Missing or incomplete translation (English or German)"), "warn", tr("Chaque élément a titre_en, enonce_en et un corps anglais après <!-- en -->, ainsi que titre_de, enonce_de et un corps allemand après <!-- de -->, qui invoquent les mêmes éléments que le corps français.", "Each element has titre_en, enonce_en and an English body after <!-- en -->, and titre_de, enonce_de and a German body after <!-- de -->, invoking the same elements as the French body."),
     els.flatMap(e => {
-      const miss = [!e.titre_en && "titre_en", !e.enonce_en && "enonce_en", !e.body_en && "body_en"].filter(Boolean);
+      const miss = [!e.titre_en && "titre_en", !e.enonce_en && "enonce_en", !e.body_en && "body_en", !e.titre_de && "titre_de", !e.enonce_de && "enonce_de", !e.body_de && "body_de"].filter(Boolean);
       if (miss.length) return [`${pill(e.id)} : ${miss.join(", ")}`];
-      const fr = e.demo_refs.join(" "), en = e.demo_refs_en.join(" ");
+      const fr = e.demo_refs.join(" "), en = e.demo_refs_en.join(" "), de = (e.demo_refs_de || []).join(" ");
+      if (fr === en && fr !== de) return [`${pill(e.id)} : ${tr("renvois", "references")} ${esc(fr)} ≠ ${esc(de)}`];
       return fr !== en ? [`${pill(e.id)} : ${tr("renvois", "references")} ${esc(fr)} ≠ ${esc(en)}`] : [];
     }));
   // 13. Problèmes de lecture
@@ -813,7 +961,8 @@ function renderLegend() {
   $("#legend").innerHTML = [...TYPES.filter(t => els.some(e => e.type === t)), ...(missing.size ? ["manquant"] : [])]
     .map(t => `<span style="--c:var(--${t})">${TYPE_LABEL[t]}</span>`).join("")
     + tr(`<span class="dash" style="--c:var(--refutee)">contre</span><span style="--c:var(--accent)">appuis</span><span style="--c:var(--these)">conséquences</span><span class="dash" style="--c:var(--muted)" title="Appui pris dans une autre partie : visible pour l'élément sélectionné et dans les modes Chemin vers, Conséquences, Voisinage">autre partie</span>`,
-         `<span class="dash" style="--c:var(--refutee)">against</span><span style="--c:var(--accent)">grounds</span><span style="--c:var(--these)">consequences</span><span class="dash" style="--c:var(--muted)" title="Ground taken from another part: shown for the selected element and in the Path to, Consequences and Neighbours modes">other part</span>`);
+         `<span class="dash" style="--c:var(--refutee)">against</span><span style="--c:var(--accent)">grounds</span><span style="--c:var(--these)">consequences</span><span class="dash" style="--c:var(--muted)" title="Ground taken from another part: shown for the selected element and in the Path to, Consequences and Neighbours modes">other part</span>`,
+         `<span class="dash" style="--c:var(--refutee)">gegen</span><span style="--c:var(--accent)">Stützen</span><span style="--c:var(--these)">Folgen</span><span class="dash" style="--c:var(--muted)" title="Stütze aus einem anderen Teil: sichtbar für das ausgewählte Element und in den Modi Pfad zu, Folgen, Nachbarn">anderer Teil</span>`);
 }
 (() => {
   const rz = $("#resizer"); let on = false;
@@ -888,7 +1037,7 @@ function renderDoc(name) {
   const d = DATA.documents.find(x => x.name === name);
   const inner = $("#readerInner"); inner.style.removeProperty("--c");
   if (!d) { inner.innerHTML = `<p>${tr("Document introuvable.", "Document not found.")}</p>`; return; }
-  const untranslated = LANG === "en" && !d.body_en ? `<p class="hint" style="color:var(--muted);font-size:13px">This project document is only available in French.</p>` : "";
+  const untranslated = LANG !== "fr" && !d["body_" + LANG] ? `<p class="hint" style="color:var(--muted);font-size:13px">${tr("", "This project document is only available in French.")}</p>` : "";
   inner.innerHTML = `<div class="crumbs"><span>${tr("Document du projet", "Project document")}</span></div>${untranslated}<div class="md" id="body">${markdown(d.body)}</div><div class="file">${esc(d.name)}</div>`;
   linkify($("#body"));
 }
@@ -916,7 +1065,7 @@ function renderPartie(p) {
 function renderHome() {
   const inner = $("#readerInner"); inner.style.removeProperty("--c");
   inner.innerHTML = `<div class="home">
-    ${LANG === "en" ? HOME_EN() : HOME_FR()}
+    ${LANG === "en" ? HOME_EN() : LANG === "de" ? HOME_DE() : HOME_FR()}
   </div>`;
 }
 function HOME_FR() {
@@ -941,6 +1090,44 @@ function HOME_FR() {
     <div class="md"><h2>Mise à jour</h2></div>
     <p style="font-size:13px">Ce fichier est généré. Après modification des textes : <code>python outils/build_explorer.py</code> (ou <code>--watch</code> pour régénérer automatiquement), puis rechargez la page.</p>`;
 }
+function HOME_DE() {
+  const count = t => els.filter(e => e.type === t).length;
+  const st = s => els.filter(e => e.statut_revision === s).length;
+  return `
+    <h1 class="title">Cecilia Ridgeways <i>Status</i> als Gitter</h1>
+    <p class="md" style="font-size:15px">Die Argumentation von Cecilia L. Ridgeways Buch <i>Status: Why Is It Everywhere? Why Does It Matter?</i> (Russell Sage Foundation, 2019), in geometrischer Ordnung rekonstruiert. Oben die Prämissen: Thesen anderer Autoren (A) und Befunde von Studien (E), die Ridgeway übernimmt; darunter ihre Begriffe und Thesen, Kapitel für Kapitel; in <span style="color:var(--refutee)">Rot</span> die Positionen, die sie verwirft. Die Aussagen sind Paraphrasen; jede verweist auf die Seiten der Druckausgabe. Das hervorgehobene Zitat steht in Ridgeways eigenen, englischen Worten.</p>
+    <p class="md" style="font-size:15px">Diese deutsche Fassung übersetzt eine zuerst auf Französisch verfasste Rekonstruktion. Die These des Buches: Status, ein von anderen verliehener Rang der Wertschätzung, ist ein <b>kulturelles Schema</b>, erfunden, um Zusammenarbeit zu bewältigen; seine Überzeugungen über Gruppen (Geschlecht, Rasse, Klasse) machen jede Begegnung zu einem Ort, an dem Ungleichheit sich reproduziert und durch Verdienst gerechtfertigt wird.</p>
+    <p class="md" style="font-size:15px">Jeder Pfeil führt von einer Stütze zu dem, was sich auf sie stützt; rote gepunktete Linien verbinden eine These mit der Position, die sie verwirft. Wählen Sie ein Element, um seinen Text zu lesen und in <span style="color:var(--accent)">Blau</span> den Pfad zu sehen, der zu ihm führt, in <span style="color:var(--these)">Orange</span>, was aus ihm folgt.</p>
+    <div class="stats">
+      ${TYPES.map(t => `<div class="stat" style="--c:var(--${t})"><div class="n">${count(t)}</div><div class="l">${TYPE_LABEL[t]}</div></div>`).join("")}
+      <div class="stat"><div class="n">${els.reduce((n, e) => n + parents.get(e.id).length, 0)}</div><div class="l">Abhängigkeiten</div></div>
+      ${STATUTS.map(s => `<div class="stat" style="--c:${STATUT_COLOR[s]}"><div class="n">${st(s)}</div><div class="l">${STATUT_LABEL[s]}</div></div>`).join("")}
+      <div class="stat" style="--c:var(--err)"><div class="n">${auditErrors}</div><div class="l">Prüffehler</div></div>
+    </div>
+    <p class="md" style="font-size:15px">Zum Einstieg: der <a href="#doc:PARCOURS.md">Lesepfad</a> in sechzehn Schritten; die Ansicht der <a href="#ordres">drei Ordnungen der Überzeugung</a>; der <a href="#cycle">Kreislauf von der Mikro- zur Makroebene</a>.</p>
+    <div class="md"><h2>Rechte</h2></div>
+    <p style="font-size:13px">Cecilia Ridgeways Buch (Russell Sage Foundation, 2019) ist urheberrechtlich geschützt: Dieses Gitter paraphrasiert es und zitiert nur kurze Stellen mit ihrer Seite; es gibt seinen Text nicht wieder. Die Zitate bleiben bei ihren Rechteinhabern; der Rest steht unter CC BY-SA 4.0 (der Code unter GPL-3.0). Einzelheiten: <a href="#doc:NOTICE.md">Quellen, Rechte und Angaben</a>. Wer Ridgeway lesen will, lese Ridgeway.</p>
+    <div class="md"><h2>Tastenkürzel</h2></div>
+    <p style="font-size:13px;line-height:1.9"><span class="kbd">/</span> suchen · <span class="kbd">F</span> einpassen · <span class="kbd">R</span> Lesemodus · <span class="kbd">1</span>–<span class="kbd">4</span> Graphmodi · <span class="kbd">Esc</span> Auswahl aufheben · <span class="kbd">Alt+←</span> <span class="kbd">Alt+→</span> oder <span class="kbd">⌫</span> Verlauf · <span class="kbd">[</span> <span class="kbd">]</span> voriges / nächstes Element desselben Typs · Mausrad: Zoom · Ziehen: verschieben</p>
+    <div class="md"><h2>Aktualisierung</h2></div>
+    <p style="font-size:13px">Diese Datei wird erzeugt. Nach Änderung der Texte: <code>python outils/build_explorer.py</code> (oder <code>--watch</code> für automatische Neuerzeugung), dann die Seite neu laden.</p>`;
+}
+const ORDRES_DE = [
+  ["var(--muted)", "Erste Ordnung: was ich denke", "„Ich denke, du bist darin besser als ich.“ Meine eigenen Erwartungen an meine Kompetenz und die der anderen (S. 39). Eine Hierarchie verlangt nicht, dass sie übereinstimmen: Unstimmigkeiten auf dieser Ebene sind häufig (S. 41).", ["D09", "R07"]],
+  ["var(--accent)", "Zweite Ordnung: was ich denke, dass die anderen denken", "„Ich denke, sie denken, dass du besser bist als ich.“ Das ist der Konsens, der die Hierarchie regiert (S. 39-42). Widerspricht er der ersten Ordnung, so leitet er das Verhalten (S. 40-41); er begründet die Stabilität (S. 65-66) und die Legitimität (S. 117).", ["T012", "E10", "E11", "T021", "T041"]],
+  ["var(--these)", "Dritte Ordnung: was „die meisten Leute“ denken", "Statusüberzeugungen betreffen die Meinung der Gemeinschaft (S. 71). Man muss sie berücksichtigen, ob man ihnen zustimmt oder nicht: Das ist ihre Kraft (S. 72). Sie lassen die am leichtesten „verkäufliche“ Wahl bevorzugen (S. 95), und selbst die Gruppen, die sie benachteiligen, teilen sie (S. 144).", ["D10", "T024", "T025", "T032", "E33", "E52"]],
+];
+const CYCLE_DE = [
+  ["var(--definition)", "Die Interdependenz", "Man muss für ein Ziel zusammenarbeiten und streitet um die Bedingungen der Zusammenarbeit (S. 2-3).", ["D03", "T001"]],
+  ["var(--accent)", "Die grundlegende Norm", "Jeder hat ein Interesse daran, dass die anderen sich der wahrgenommenen Kompetenz fügen; Dritte setzen es durch (S. 29-37).", ["T008", "T009", "T010"]],
+  ["var(--accent)", "Die Statusüberzeugungen", "Um zu wissen, was die anderen für Kompetenz halten werden, greift man auf Überzeugungen über Gruppen zurück (S. 37-38, 69).", ["T011", "T022", "T024"]],
+  ["var(--these)", "Verzerrte Erwartungen in jeder Begegnung", "Geschlecht, Rasse und Klasse rahmen die Leistungserwartungen, die sich selbst erfüllen (S. 100-111).", ["T034", "T036", "T037"]],
+  ["var(--these)", "Drei Verzerrungen, die sich anhäufen", "Status-, Legitimitäts- und Assoziationsverzerrung: jedes Mal klein, über ein Leben beträchtlich (S. 121-123).", ["T044"]],
+  ["var(--refutee)", "Ungleicher Zugang zu Ressourcen und Macht", "Bei der Arbeit, in der Schule, im Gesundheitswesen und bis in die Praktiken der Organisationen (S. 129-135).", ["T047", "T048", "T049"]],
+  ["var(--refutee)", "Die Verfestigung", "Der individuelle Vorteil wird zu einem Recht, das auf der Gruppenidentität beruht (S. 127-129).", ["T046"]],
+  ["var(--etude)", "Die Legitimierung", "Die Herrschenden scheinen ihre Vorteile verdient zu haben; die Beherrschten „spielen mit“; und man verleugnet den Status selbst (S. 143-149).", ["T053", "T054", "T055"]],
+  ["var(--accent)", "Zurück zu den Überzeugungen", "Hierarchien und Reichtum liefern den scheinbaren Beweis der Überlegenheit der begünstigten Gruppen, der die Überzeugungen verstärkt (S. 81, 141-142).", ["T027", "T052"]],
+];
 function HOME_EN() {
   const count = t => els.filter(e => e.type === t).length;
   const st = s => els.filter(e => e.statut_revision === s).length;
@@ -968,7 +1155,7 @@ function renderOrdres() {
   const inner = $("#readerInner"); inner.style.removeProperty("--c");
   const P = ids => ids.filter(id => byId.has(id)).map(id => pill(id, true)).join("");
   const fr = LANG !== "en";
-  const rows = fr ? [
+  const rows = LANG === "de" ? ORDRES_DE : fr ? [
     ["var(--muted)", "Premier ordre : ce que je pense", "« Je pense que tu es meilleur que moi à cela. » Mes propres attentes sur ma compétence et celle des autres (p. 39). Une hiérarchie n'exige pas qu'elles concordent : les désaccords à ce niveau sont fréquents (p. 41).", ["D09", "R07"]],
     ["var(--accent)", "Second ordre : ce que je pense que les autres pensent", "« Je pense qu'ils pensent que tu es meilleur que moi. » C'est le consensus qui gouverne la hiérarchie (p. 39-42). Quand il contredit le premier ordre, c'est lui qui guide la conduite (p. 40-41) ; il fonde la stabilité (p. 65-66) et la légitimité (p. 117).", ["T012", "E10", "E11", "T021", "T041"]],
     ["var(--these)", "Troisième ordre : ce que pense « la plupart des gens »", "Les croyances de statut portent sur l'opinion de la communauté (p. 71). On doit en tenir compte qu'on y adhère ou non : c'est leur force (p. 72). Elles font préférer le choix le plus « vendable » (p. 95), et même les groupes qu'elles défavorisent les partagent (p. 144).", ["D10", "T024", "T025", "T032", "E33", "E52"]],
@@ -994,7 +1181,7 @@ function renderCycle() {
   const inner = $("#readerInner"); inner.style.removeProperty("--c");
   const P = ids => ids.filter(id => byId.has(id)).map(id => pill(id, true)).join("");
   const fr = LANG !== "en";
-  const steps = fr ? [
+  const steps = LANG === "de" ? CYCLE_DE : fr ? [
     ["var(--definition)", "L'interdépendance", "On doit coopérer pour un but, et l'on se dispute les termes de la coopération (p. 2-3).", ["D03", "T001"]],
     ["var(--accent)", "La norme fondamentale", "Chacun a intérêt à ce que les autres défèrent à la compétence perçue ; les tiers la font respecter (p. 29-37).", ["T008", "T009", "T010"]],
     ["var(--accent)", "Les croyances de statut", "Pour savoir ce que les autres tiendront pour compétence, on puise dans des croyances sur les groupes (p. 37-38, 69).", ["T011", "T022", "T024"]],
@@ -1141,7 +1328,7 @@ function applyStatic() {
   $("#read").textContent = tr("Lecture", "Read"); $("#read").title = tr("Masquer le graphe pour lire (touche R)", "Hide the graph to read (key R)");
   $("#empty").textContent = tr("Aucun élément à afficher avec ces filtres.", "No element to show with these filters.");
   $("#resizer").title = tr("Glisser pour redimensionner", "Drag to resize");
-  $("#meta").textContent = tr(`${els.length} éléments · généré le ${DATA.generated}`, `${els.length} elements · generated ${DATA.generated}`);
+  $("#meta").textContent = tr(`${els.length} éléments · généré le ${DATA.generated}`, `${els.length} elements · generated ${DATA.generated}`, `${els.length} Elemente · erzeugt am ${DATA.generated}`);
   document.querySelectorAll(".langsw [data-lang]").forEach(x => { x.classList.toggle("on", x.dataset.lang === LANG); x.setAttribute("aria-pressed", x.dataset.lang === LANG); });
   renderLegend();
 }

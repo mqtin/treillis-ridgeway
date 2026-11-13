@@ -10,8 +10,8 @@ Ce projet reconstruit l'argument d'un livre sous droits. Il n'en reproduit pas l
 
 ## Les langues
 
-- La reconstruction est écrite en français et traduite en anglais par nous. Les mots de Ridgeway sont cités en anglais, tels quels ; dans le corps français, certains sont traduits par nous.
-- À notre connaissance, le livre n'a pas de traduction française publiée ; les équivalents français des concepts (schème culturel, croyances de statut, etc.) sont les nôtres.
+- La reconstruction est écrite en français et traduite en anglais et en allemand par nous. Les mots de Ridgeway sont cités en anglais, tels quels ; dans le corps français, certains sont traduits par nous.
+- À notre connaissance, le livre n'a pas de traduction française ni allemande publiée ; les équivalents français et allemands des concepts (schème culturel, croyances de statut, etc.) sont les nôtres.
 
 ## Les autres auteurs
 
@@ -19,8 +19,8 @@ Les travaux d'autres auteurs (Weber, Goffman, Sewell, Tilly, Blumer, Fiske…) e
 
 ## Le projet
 
-- Reconstruction, traduction anglaise, outils et explorateur : auteur du dépôt [mqtin](https://github.com/mqtin), 2026, avec l'aide de Claude (Anthropic).
+- Reconstruction, traductions anglaise et allemande, outils et explorateur : auteur du dépôt [mqtin](https://github.com/mqtin), 2026, avec l'aide de Claude (Anthropic).
 - L'explorateur est l'outil commun aux treillis d'idées du même auteur (<https://treillis.qpetit.com>).
-- Licences : code sous GPL-3.0, travail de reconstruction (et sa traduction) sous CC BY-SA 4.0, citations exclues (voir `LICENSE`).
+- Licences : code sous GPL-3.0, travail de reconstruction (et ses traductions) sous CC BY-SA 4.0, citations exclues (voir `LICENSE`).
 
 **Ces mentions doivent être conservées** dans toute redistribution du dépôt ou d'`explorer.html`.
