@@ -1,0 +1,6 @@
+# Texte du livre, sous droits : jamais versionné (AGENT.md § 6)
+source/
+__pycache__/
+*.pyc
+.obsidian/workspace.json
+.claude/settings.local.json

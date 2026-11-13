@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Status — treillis</title>
+<meta name="description" content="Le livre de Cecilia L. Ridgeway, Status: Why Is It Everywhere? Why Does It Matter? (2019), reconstruit dans l'ordre géométrique : concepts, prémisses, thèses, positions écartées. Cecilia Ridgeway's Status, reconstructed in geometrical order.">
+<meta name="author" content="mqtin">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Treillis">
+<meta property="og:title" content="Status (Ridgeway) — treillis">
+<meta property="og:description" content="Le livre de Cecilia Ridgeway sur le statut reconstruit dans l'ordre géométrique, en graphe explorable. Cecilia Ridgeway's book on status, reconstructed in geometrical order as an explorable graph.">
+<meta property="og:url" content="https://treillis.qpetit.com/ridgeway/">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:locale:alternate" content="en_GB">
+<link rel="canonical" href="https://treillis.qpetit.com/ridgeway/">
+<link rel="alternate" hreflang="fr" href="https://treillis.qpetit.com/ridgeway/?lang=fr">
+<link rel="alternate" hreflang="en" href="https://treillis.qpetit.com/ridgeway/?lang=en">
+<link rel="alternate" hreflang="x-default" href="https://treillis.qpetit.com/ridgeway/">
+<style>
+:root {
+  --bg: #f7f6f2; --panel: #ffffff; --ink: #1f1d1a; --muted: #6b665d; --line: #e2ded5;
+  --accent: #2f5d8a; --hl: #fff3c4;
+  --definition: #3b6ea8; --auteur: #6b5bb0; --etude: #2f8a5b; --these: #c0702a; --refutee: #b83a3a; --manquant: #9b9b9b;
+  --ok: #2f8a5b; --warn: #b7791f; --err: #b83a3a;
+  --band: rgba(0,0,0,.035); --gut: 30px;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #17181a; --panel: #1f2023; --ink: #e8e6e1; --muted: #9a968d; --line: #33353a;
+    --accent: #7fb0e0; --hl: #4a4220;
+    --definition: #6d9fd6; --auteur: #a294e0; --etude: #5fbf8b; --these: #e39a55; --refutee: #e07070; --manquant: #777;
+    --band: rgba(255,255,255,.04);
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 14px; }
+button { font: inherit; color: inherit; }
+a { color: var(--accent); }
+
+#app { display: grid; grid-template-columns: 290px 1fr; grid-template-rows: 48px 1fr; height: 100vh; }
+header { grid-column: 1 / -1; display: flex; align-items: center; gap: 16px; padding: 0 16px; border-bottom: 1px solid var(--line); background: var(--panel); }
+header h1 { font-family: var(--serif); font-size: 18px; font-weight: 600; margin: 0; letter-spacing: .01em; }
+header .meta { color: var(--muted); font-size: 12px; margin-left: auto; white-space: nowrap; }
+.navbtn { border: 1px solid var(--line); background: none; border-radius: 6px; width: 30px; height: 28px; cursor: pointer; font-size: 15px; line-height: 1; color: var(--ink); }
+.navbtn:hover:not(:disabled) { background: var(--bg); }
+.navbtn:disabled { opacity: .3; cursor: default; }
+#nav { display: flex; gap: 4px; }
+#trail { display: flex; align-items: center; gap: 2px; min-width: 0; overflow: hidden; font-size: 12px; flex: 1; }
+#trail .step { border: 0; background: none; cursor: pointer; padding: 3px 6px; border-radius: 4px; white-space: nowrap; color: var(--c, var(--muted)); font-weight: 600; max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
+#trail .step:hover { background: var(--bg); }
+#trail .step.cur { background: var(--bg); outline: 1px solid var(--c, var(--line)); }
+#trail .step.fwd { opacity: .45; }
+#trail .step .tt { font-weight: 400; color: var(--muted); margin-left: 4px; }
+#trail .arrow { color: var(--line); }
+#trail .lbl { color: var(--muted); margin-right: 4px; white-space: nowrap; }
+.seq { display: flex; gap: 6px; }
+.seq a { font-size: 12px; text-decoration: none; border: 1px solid var(--line); border-radius: 5px; padding: 2px 8px; color: var(--muted); white-space: nowrap; }
+.seq a:hover { color: var(--ink); border-color: var(--ink); }
+.seq a.off { visibility: hidden; }
+
+/* Barre latérale */
+#side { border-right: 1px solid var(--line); background: var(--panel); display: flex; flex-direction: column; min-height: 0; }
+#search { margin: 12px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); font: inherit; }
+#filters { padding: 0 12px 8px; display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid var(--line); }
+.chip { border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 2px 9px; font-size: 12px; cursor: pointer; color: var(--muted); }
+.chip.on { color: var(--ink); border-color: var(--ink); }
+.chip .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; vertical-align: 0; }
+#list { overflow: auto; flex: 1; padding: 4px 0 16px; }
+.group { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); padding: 12px 14px 4px; }
+.item { display: block; width: 100%; text-align: left; border: 0; background: none; padding: 5px 14px; cursor: pointer; border-left: 3px solid transparent; }
+.item:hover { background: var(--bg); }
+.item.sel { background: var(--bg); border-left-color: var(--accent); }
+.item .id { font-weight: 600; font-variant-numeric: tabular-nums; margin-right: 6px; }
+.item .t { color: var(--ink); }
+.item .snip { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.item .badge-err { color: var(--err); font-size: 11px; margin-left: 4px; }
+mark { background: var(--hl); color: inherit; padding: 0 1px; }
+
+/* Zone principale */
+#main { display: grid; grid-template-columns: 1fr 6px var(--readerW, 44%); min-height: 0; min-width: 0; }
+#main.reading { grid-template-columns: 0 0 1fr; }
+#main.reading #graphwrap, #main.reading #resizer { display: none; }
+#graphwrap { position: relative; min-width: 0; overflow: hidden; }
+#graph { position: absolute; top: 0; bottom: 0; left: var(--gut); width: calc(100% - var(--gut)); height: 100%; display: block; cursor: grab; user-select: none; }
+#graph.drag { cursor: grabbing; }
+#toolbar { position: absolute; top: 10px; left: calc(var(--gut) + 10px); z-index: 3; display: flex; gap: 4px; flex-wrap: wrap; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 4px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+#toolbar button { border: 0; background: none; padding: 4px 9px; border-radius: 5px; cursor: pointer; font-size: 12px; color: var(--muted); }
+#toolbar button:hover { background: var(--bg); color: var(--ink); }
+#toolbar button.on { background: var(--bg); color: var(--ink); font-weight: 600; }
+#toolbar .sep { width: 1px; background: var(--line); margin: 2px 2px; }
+#legend { position: absolute; bottom: 10px; left: calc(var(--gut) + 10px); z-index: 3; font-size: 11px; color: var(--muted); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; display: flex; gap: 10px; flex-wrap: wrap; max-width: calc(100% - var(--gut) - 20px); }
+#legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; background: var(--c); }
+#empty { position: absolute; inset: 0 0 0 var(--gut); display: none; align-items: center; justify-content: center; color: var(--muted); }
+#resizer { cursor: col-resize; background: var(--line); opacity: .5; }
+#resizer:hover { opacity: 1; }
+#legend span.dash::before { height: 0; border-top: 2px dashed var(--c); background: none; vertical-align: 3px; }
+/* Marge des parties (reprise de SpinozaGraph) : hors du graphe, ne recouvre jamais les nœuds */
+#gutter { position: absolute; top: 0; bottom: 0; left: 0; width: var(--gut); background: var(--panel); border-right: 1px solid var(--line); overflow: hidden; z-index: 2; }
+.glabel { position: absolute; left: 3px; right: 3px; border-radius: 6px; background: var(--band); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: pointer; }
+.glabel:hover { border-color: var(--ink); }
+.glabel span { writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-height: 100%; font-family: var(--serif); font-size: 12.5px; padding: 6px 0; }
+.glabel b { font-weight: 700; }
+.glabel i { color: var(--muted); }
+.band { fill: var(--band); cursor: pointer; }
+.band:hover { fill: var(--hl); fill-opacity: .25; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin: 0 6px 4px 0; }
+.seg button { border: 0; border-right: 1px solid var(--line); background: none; padding: 3px 10px; font-size: 12px; cursor: pointer; color: var(--muted); }
+.seg button:last-child { border-right: 0; }
+.seg button.on { background: var(--bg); color: var(--ink); font-weight: 600; }
+
+/* Nœuds */
+.node rect { fill: var(--panel); stroke: var(--c); stroke-width: 1.5; }
+.node .bar { fill: var(--c); stroke: none; }
+.node text { fill: var(--ink); font-size: 12px; pointer-events: none; }
+.node text.nid { font-weight: 700; fill: var(--c); }
+.node { cursor: pointer; transition: opacity .15s; }
+.node.missing rect { stroke-dasharray: 4 3; }
+.node.st-brouillon rect { stroke-dasharray: none; }
+.node.st-retire { opacity: .45; }
+.node.sel rect { stroke-width: 3; fill: var(--hl); }
+.node.dim { opacity: .18; }
+.node .status { stroke: var(--panel); stroke-width: 1.5; }
+.edge { fill: none; stroke: var(--muted); stroke-width: 1.2; opacity: .5; transition: opacity .15s; }
+.edge.anc { stroke: var(--accent); stroke-width: 2.2; opacity: .95; }
+.edge.desc { stroke: var(--these); stroke-width: 2.2; opacity: .95; }
+.edge.dim { opacity: .07; }
+.edge.missing { stroke-dasharray: 4 3; }
+.edge.xpart { stroke-dasharray: 6 4; opacity: .35; }
+.edge.contre { stroke: var(--refutee); stroke-dasharray: 2 4; stroke-width: 1.6; opacity: .7; }
+.citation { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--muted); margin: -10px 0 22px 19px; }
+.citation .pg { font-style: normal; font-size: 12px; margin-left: 6px; }
+#graph.m-all .edge.xpart:not(.anc):not(.desc) { display: none; }
+
+/* Lecteur */
+#reader { overflow: auto; background: var(--panel); border-left: 1px solid var(--line); min-width: 0; }
+#reader .inner { max-width: 760px; margin: 0 auto; padding: 24px 32px 80px; }
+#reader .crumbs { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 12px; margin-bottom: 10px; }
+#reader .crumbs button { border: 1px solid var(--line); background: none; border-radius: 5px; padding: 2px 8px; cursor: pointer; font-size: 12px; color: var(--muted); }
+#reader .crumbs button:hover { color: var(--ink); }
+#reader h1.title { font-family: var(--serif); font-size: 28px; font-weight: 600; margin: 4px 0 8px; line-height: 1.2; }
+#reader h1.title .eid { color: var(--c); margin-right: 10px; }
+.badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+.badge { font-size: 11px; border-radius: 4px; padding: 2px 7px; border: 1px solid var(--line); color: var(--muted); }
+.badge b { color: var(--ink); font-weight: 600; }
+.badge.type { background: var(--c); color: #fff; border-color: var(--c); }
+.enonce { font-family: var(--serif); font-size: 17px; line-height: 1.55; border-left: 3px solid var(--c); padding: 4px 0 4px 16px; margin: 0 0 22px; }
+.rel { display: grid; grid-template-columns: 150px 1fr; gap: 6px 12px; font-size: 13px; padding: 14px 16px; background: var(--bg); border-radius: 8px; margin-bottom: 26px; }
+.rel .k { color: var(--muted); }
+.pill { display: inline-block; border: 1px solid var(--c, var(--line)); color: var(--c, var(--ink)); border-radius: 4px; padding: 0 6px; margin: 0 4px 4px 0; cursor: pointer; font-weight: 600; font-size: 12px; background: var(--panel); text-decoration: none; }
+.pill:hover { background: var(--c); color: #fff; }
+.pill.missing { --c: var(--err); border-style: dashed; }
+.pill .pt { font-weight: 400; margin-left: 4px; }
+.chain { margin: 0; padding: 0; list-style: none; }
+.chain li { padding: 1px 0; }
+.md { font-family: var(--serif); font-size: 16px; line-height: 1.65; }
+.md h1, .md h2, .md h3, .md h4 { font-family: var(--sans); line-height: 1.3; }
+.md h1 { font-size: 24px; }
+.md h2 { font-size: 15px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 32px 0 8px; border-bottom: 1px solid var(--line); padding-bottom: 4px; }
+.md h3 { font-size: 15px; margin: 22px 0 6px; }
+.md ul, .md ol { padding-left: 22px; }
+.md li { margin: 3px 0; }
+.md code { font-family: ui-monospace, Consolas, monospace; font-size: .85em; background: var(--bg); padding: 1px 4px; border-radius: 3px; }
+.md pre { background: var(--bg); padding: 12px; border-radius: 6px; overflow: auto; font-size: 13px; line-height: 1.45; }
+.md pre code { background: none; padding: 0; }
+.md table { border-collapse: collapse; font-family: var(--sans); font-size: 13px; margin: 12px 0; width: 100%; }
+.md th, .md td { border: 1px solid var(--line); padding: 5px 8px; text-align: left; vertical-align: top; }
+.md th { background: var(--bg); }
+.md blockquote { margin: 0; padding-left: 14px; border-left: 3px solid var(--line); color: var(--muted); }
+.md a.ref { font-family: var(--sans); font-size: .82em; font-weight: 700; text-decoration: none; border: 1px solid var(--c); color: var(--c); border-radius: 3px; padding: 0 4px; cursor: pointer; }
+.md a.ref:hover { background: var(--c); color: #fff; }
+.md .ref.missing { color: var(--err); border: 1px dashed var(--err); border-radius: 3px; padding: 0 4px; font-family: var(--sans); font-size: .82em; }
+.sources { font-size: 13px; line-height: 1.5; padding-left: 0; list-style: none; }
+.sources li { border-left: 3px solid var(--warn); padding: 6px 0 6px 12px; margin: 8px 0; }
+.sources li.ok { border-left-color: var(--ok); }
+.sources .flag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--warn); }
+.sources li.ok .flag { color: var(--ok); }
+.sources .note { color: var(--muted); display: block; margin-top: 2px; }
+.file { color: var(--muted); font-size: 12px; margin-top: 30px; font-family: ui-monospace, Consolas, monospace; }
+.home h2 { font-family: var(--serif); }
+.stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin: 16px 0 24px; }
+.stat { background: var(--bg); border-radius: 8px; padding: 10px 12px; border-top: 3px solid var(--c, var(--line)); }
+.stat .n { font-size: 22px; font-weight: 700; }
+.stat .l { color: var(--muted); font-size: 12px; }
+.audit h3 { font-size: 14px; margin: 22px 0 6px; display: flex; gap: 8px; align-items: center; }
+.audit .count { font-size: 11px; border-radius: 999px; padding: 1px 8px; background: var(--bg); color: var(--muted); }
+.audit .count.err { background: var(--err); color: #fff; }
+.audit .count.warn { background: var(--warn); color: #fff; }
+.audit .count.ok { background: var(--ok); color: #fff; }
+.audit ul { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.6; }
+.regimes table.grid { border-collapse: separate; border-spacing: 6px; width: 100%; margin: 10px 0 18px; }
+.regimes .grid th { font: 600 12px/1.3 var(--sans); color: var(--muted); text-transform: uppercase; letter-spacing: .05em; padding: 4px; }
+.regimes .grid td { vertical-align: top; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: var(--panel); font-size: 14px; line-height: 1.5; width: 42%; }
+.regimes .grid td.empty { color: var(--muted); font-style: italic; background: transparent; border-style: dashed; }
+.regimes .grid td b { font-family: var(--serif); font-size: 16px; font-weight: 600; display: block; margin-bottom: 4px; }
+.regimes .grid td.sad { border-left: 4px solid var(--refutee); }
+.regimes .grid td.joy { border-left: 4px solid var(--these); }
+.regimes ol.timeline { list-style: none; padding: 0; margin: 8px 0 18px; border-left: 2px solid var(--line); }
+.regimes ol.timeline li { position: relative; padding: 2px 0 14px 18px; font-size: 14px; line-height: 1.55; }
+.regimes ol.timeline li::before { content: ""; position: absolute; left: -7px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--c, var(--accent)); }
+.regimes ol.timeline li b { font-family: var(--serif); font-size: 16px; }
+.audit .hint { color: var(--muted); font-size: 12px; margin: 0 0 4px; }
+.langsw { display: flex; gap: 2px; }
+.langsw button { border: 1px solid var(--line); background: none; border-radius: 5px; padding: 3px 7px; font-size: 12px; cursor: pointer; color: var(--muted); }
+.langsw button.on { color: var(--ink); border-color: var(--ink); font-weight: 600; }
+.kbd { font-family: ui-monospace, Consolas, monospace; border: 1px solid var(--line); border-radius: 3px; padding: 0 4px; font-size: 11px; }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1><i>Status</i> · Ridgeway</h1>
+    <div id="nav">
+      <button class="navbtn" id="back" title="Précédent (Alt+←)">←</button>
+      <button class="navbtn" id="fwd" title="Suivant (Alt+→)">→</button>
+    </div>
+    <div id="trail"></div>
+    <span class="meta" id="meta"></span>
+    <div class="langsw" role="group" aria-label="Langue / Language"><button data-lang="fr" title="Français">FR</button><button data-lang="en" title="English">EN</button></div>
+  </header>
+  <aside id="side">
+    <input id="search" type="search" placeholder="Rechercher (id, titre, texte) — touche /" autocomplete="off">
+    <div id="filters"></div>
+    <nav id="list"></nav>
+  </aside>
+  <section id="main">
+    <div id="graphwrap">
+      <div id="gutter"></div>
+      <svg id="graph"><g id="viewport"><g id="bands"></g><g id="edges"></g><g id="nodes"></g></g></svg>
+      <div id="toolbar">
+        <button data-mode="all" class="on" title="Tout le graphe ; la sélection met en évidence ses appuis et ses conséquences">Tout</button>
+        <button data-mode="anc" title="Seulement le chemin qui mène à l'élément sélectionné">Chemin vers</button>
+        <button data-mode="desc" title="Seulement ce qui découle de l'élément sélectionné">Conséquences</button>
+        <button data-mode="near" title="Voisins directs">Voisinage</button>
+        <span class="sep"></span>
+        <button id="fit" title="Recadrer (touche F)">Recadrer</button>
+        <button id="read" title="Masquer le graphe pour lire (touche R)">Lecture</button>
+      </div>
+      <div id="legend"></div>
+      <div id="empty">Aucun élément à afficher avec ces filtres.</div>
+    </div>
+    <div id="resizer" title="Glisser pour redimensionner"></div>
+    <article id="reader"><div class="inner" id="readerInner"></div></article>
+  </section>
+</div>
+
+<script>
+const DATA = /*__DATA__*/null;
+
+// ---------- Langue ----------
+// Préférence partagée avec l'accueil du site (clé treillis-lang) ; ?lang=en dans l'URL l'emporte.
+const LANGS = ["fr", "en"];
+let LANG = (() => {
+  const q = new URLSearchParams(location.search).get("lang");
+  if (LANGS.includes(q)) return q;
+  try { const s = localStorage.getItem("treillis-lang"); if (LANGS.includes(s)) return s; } catch {}
+  return (navigator.language || "fr").toLowerCase().startsWith("fr") ? "fr" : "en";
+})();
+const tr = (fr, en) => LANG === "en" ? en : fr;
+// Champs traduits : on garde l'original (_fr) et on bascule titre / enonce / body selon la langue.
+const I18N_FIELDS = ["titre", "enonce", "body", "resume"];
+function swapLang(o) {
+  for (const k of I18N_FIELDS) if (k in o) {
+    if (!(k + "_fr" in o)) o[k + "_fr"] = o[k];
+    o[k] = LANG === "en" && o[k + "_en"] ? o[k + "_en"] : o[k + "_fr"];
+  }
+}
+function applyData() {
+  DATA.elements.forEach(swapLang);
+  (DATA.partie_docs || []).forEach(swapLang);
+  DATA.documents.forEach(swapLang);
+  for (const p of DATA.partie_docs || []) DATA.parties[p.id] = p.titre;
+}
+applyData();
+
+// ---------- Modèle ----------
+const TYPES = ["definition", "auteur", "etude", "these", "refutee"];
+let TYPE_LABEL, TYPE_SING, STATUT_LABEL;
+function setLabels() {
+  TYPE_LABEL = tr({ definition: "Concepts", auteur: "Prémisses : auteurs", etude: "Prémisses : études", these: "Thèses", refutee: "Positions écartées", manquant: "Manquant" },
+                  { definition: "Concepts", auteur: "Premises: authors", etude: "Premises: studies", these: "Theses", refutee: "Rejected positions", manquant: "Missing" });
+  TYPE_SING = tr({ definition: "Concept", auteur: "Prémisse (auteur)", etude: "Prémisse (étude)", these: "Thèse", refutee: "Position écartée", manquant: "Référence manquante" },
+                 { definition: "Concept", auteur: "Premise (author)", etude: "Premise (study)", these: "Thesis", refutee: "Rejected position", manquant: "Missing reference" });
+  STATUT_LABEL = tr({ brouillon: "brouillon", "verifie-texte": "vérifié sur le texte" }, { brouillon: "draft", "verifie-texte": "checked against the text" });
+}
+setLabels();
+const STATUTS = ["brouillon", "verifie-texte"];
+const STATUT_COLOR = { brouillon: "var(--muted)", "verifie-texte": "var(--ok)" };
+const partLabel = p => p === "P" ? tr("Prémisses", "Premises") : tr("Chapitre ", "Chapter ") + p;
+// Repères : pages de l'édition papier, regroupées en intervalles (p. 39-42, 45).
+const pagesTxt = e => { const p = e.pages || [], out = []; for (let i = 0; i < p.length;) { let j = i; while (j + 1 < p.length && p[j + 1] === p[j] + 1) j++; out.push(i === j ? `${p[i]}` : `${p[i]}-${p[j]}`); i = j + 1; } return "p. " + out.join(", "); };
+const locTitle = e => tr("Pages de l'édition papier (Russell Sage Foundation, 2019)", "Pages of the print edition (Russell Sage Foundation, 2019)");
+
+const els = DATA.elements;
+const byId = new Map(els.map(e => [e.id, e]));
+const resolve = id => byId.has(id) ? id : (id.match(/^([A-Z]\d+)-C\d+$/) && byId.has(id.split("-")[0]) ? id.split("-")[0] : id);
+const typeOf = id => byId.get(id)?.type || "manquant";
+const color = id => `var(--${TYPES.includes(typeOf(id)) ? typeOf(id) : "manquant"})`;
+
+// Arêtes : dépendance -> dépendant
+const parents = new Map(), children = new Map(), missing = new Set();
+for (const e of els) { parents.set(e.id, []); children.set(e.id, []); }
+for (const e of els) for (const d0 of e.depends_on) {
+  const d = resolve(d0);
+  if (!byId.has(d)) { missing.add(d); if (!children.has(d)) { children.set(d, []); parents.set(d, []); } }
+  if (!parents.get(e.id).includes(d)) parents.get(e.id).push(d);
+  children.get(d).push(e.id);
+}
+// Arêtes « contre » : thèse -> position réfutée (hors du graphe des appuis : ni chemin, ni conséquences)
+const refutes = new Map(), refutedBy = new Map();
+for (const e of els) { refutes.set(e.id, e.contre.map(resolve)); for (const r of refutes.get(e.id)) (refutedBy.get(r) || refutedBy.set(r, []).get(r)).push(e.id); }
+function closure(start, next) {
+  const seen = new Set(), stack = [...(next.get(start) || [])];
+  while (stack.length) { const x = stack.pop(); if (seen.has(x) || x === start) continue; seen.add(x); stack.push(...(next.get(x) || [])); }
+  return seen;
+}
+// Mentions inverses (qui cite cet élément dans son texte)
+const mentionedBy = new Map();
+for (const e of els) for (const m of e.mentions) { const r = resolve(m); if (r !== e.id) (mentionedBy.get(r) || mentionedBy.set(r, []).get(r)).push(e.id); }
+for (const d of DATA.documents) for (const m of d.mentions || []) (mentionedBy.get(resolve(m)) || mentionedBy.set(resolve(m), []).get(resolve(m))).push("doc:" + d.name);
+
+// ---------- Utilitaires ----------
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fold = s => String(s ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const svgEl = (tag, attrs = {}) => { const n = document.createElementNS("http://www.w3.org/2000/svg", tag); for (const k in attrs) n.setAttribute(k, attrs[k]); return n; };
+const idSort = (a, b) => a.localeCompare(b, "fr", { numeric: true });
+function pill(id, withTitle = false) {
+  const e = byId.get(id);
+  if (id.startsWith("doc:")) return `<a class="pill" style="--c:var(--muted)" href="#${esc(id)}">${esc(id.slice(4))}</a>`;
+  return `<a class="pill ${e ? "" : "missing"}" style="--c:${color(id)}" href="#${esc(id)}" title="${esc(e ? e.titre + " — " + e.enonce : tr("Référence vers un élément inexistant", "Reference to a missing element"))}">${esc(id)}${withTitle && e ? `<span class="pt">${esc(e.titre)}</span>` : ""}</a>`;
+}
+
+// ---------- Markdown minimal ----------
+function inline(s) {
+  const keep = [];
+  const hold = h => `\u0000${keep.push(h) - 1}\u0000`;
+  s = s.replace(/`([^`]+)`/g, (_, c) => hold(`<code>${esc(c)}</code>`));
+  s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, t, u) => hold(`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a>`));
+  s = s.replace(/https?:\/\/[^\s<>»)]+/g, u => hold(`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(u)}</a>`));
+  s = esc(s);
+  s = s.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  s = s.replace(/(^|[^*\w])\*(?!\s)([^*]+?)\*(?!\w)/g, "$1<em>$2</em>");
+  s = s.replace(/(^|[^\w])_(?!\s)([^_]+?)_(?!\w)/g, "$1<em>$2</em>");
+  return s.replace(/\u0000(\d+)\u0000/g, (_, i) => keep[+i]);
+}
+function markdown(src) {
+  const lines = src.replace(/\r\n/g, "\n").split("\n");
+  let out = "", i = 0;
+  const isBlockStart = l => /^(#{1,6}\s|```|>|\s*([-*+]|\d+\.)\s|\|)/.test(l) || /^(-{3,}|\*{3,})\s*$/.test(l);
+  while (i < lines.length) {
+    const l = lines[i];
+    if (!l.trim()) { i++; continue; }
+    if (l.startsWith("```")) {
+      const buf = []; i++;
+      while (i < lines.length && !lines[i].startsWith("```")) buf.push(lines[i++]);
+      i++; out += `<pre><code>${esc(buf.join("\n"))}</code></pre>`; continue;
+    }
+    let m;
+    if ((m = l.match(/^(#{1,6})\s+(.*)$/))) { const n = m[1].length; out += `<h${n}>${inline(m[2])}</h${n}>`; i++; continue; }
+    if (/^(-{3,}|\*{3,})\s*$/.test(l)) { out += "<hr>"; i++; continue; }
+    if (l.startsWith("|") && i + 1 < lines.length && /^\|?\s*:?-{2,}/.test(lines[i + 1])) {
+      const row = r => r.trim().replace(/^\||\|$/g, "").split("|").map(c => c.trim());
+      out += "<table><thead><tr>" + row(l).map(c => `<th>${inline(c)}</th>`).join("") + "</tr></thead><tbody>";
+      i += 2;
+      while (i < lines.length && lines[i].trim().startsWith("|")) out += "<tr>" + row(lines[i++]).map(c => `<td>${inline(c)}</td>`).join("") + "</tr>";
+      out += "</tbody></table>"; continue;
+    }
+    if (l.startsWith(">")) {
+      const buf = [];
+      while (i < lines.length && lines[i].startsWith(">")) buf.push(lines[i++].replace(/^>\s?/, ""));
+      out += `<blockquote>${markdown(buf.join("\n"))}</blockquote>`; continue;
+    }
+    if (/^\s*([-*+]|\d+\.)\s/.test(l)) {
+      const stack = [];
+      while (i < lines.length && (/^\s*([-*+]|\d+\.)\s/.test(lines[i]) || (lines[i].trim() && /^\s{2,}/.test(lines[i]) && stack.length))) {
+        const li = lines[i].match(/^(\s*)([-*+]|\d+\.)\s+(.*)$/);
+        if (!li) { out += " " + inline(lines[i].trim()); i++; continue; }
+        const ind = li[1].length, tag = /\d/.test(li[2]) ? "ol" : "ul";
+        while (stack.length && ind < stack[stack.length - 1].ind) out += `</li></${stack.pop().tag}>`;
+        if (!stack.length || ind > stack[stack.length - 1].ind) { out += `<${tag}><li>`; stack.push({ ind, tag }); }
+        else out += "</li><li>";
+        out += inline(li[3]); i++;
+      }
+      while (stack.length) out += `</li></${stack.pop().tag}>`;
+      continue;
+    }
+    const buf = [];
+    while (i < lines.length && lines[i].trim() && !isBlockStart(lines[i])) buf.push(lines[i++]);
+    if (!buf.length) buf.push(lines[i++]);
+    out += `<p>${inline(buf.join(" "))}</p>`;
+  }
+  return out;
+}
+// Transforme les identifiants en liens, hors <a>, <code>, <pre>.
+function linkify(root) {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const targets = [];
+  while (walker.nextNode()) {
+    const n = walker.currentNode;
+    if (n.parentElement.closest("a, code, pre")) continue;
+    if (/\b[DAETR]\d{2,3}(?:-C\d+)?\b/.test(n.nodeValue)) targets.push(n);
+  }
+  for (const n of targets) {
+    const frag = document.createDocumentFragment();
+    let last = 0;
+    n.nodeValue.replace(/\b([DAETR]\d{2,3}(?:-C\d+)?)\b/g, (m, id, off) => {
+      frag.append(n.nodeValue.slice(last, off));
+      const r = resolve(id);
+      if (byId.has(r)) {
+        const a = document.createElement("a");
+        a.className = "ref"; a.href = "#" + r; a.textContent = id;
+        a.style.setProperty("--c", color(r)); a.title = byId.get(r).titre + " — " + byId.get(r).enonce;
+        frag.append(a);
+      } else { const s = document.createElement("span"); s.className = "ref missing"; s.textContent = id; s.title = tr("Élément inexistant", "Missing element"); frag.append(s); }
+      last = off + m.length;
+    });
+    frag.append(n.nodeValue.slice(last));
+    n.replaceWith(frag);
+  }
+}
+
+// ---------- État ----------
+const state = {
+  sel: null, view: "home", mode: "all", q: "",
+  types: new Set([...TYPES, "manquant"]), statuts: new Set(STATUTS),
+  parties: new Set([...Object.keys(DATA.parties || {}), ""]),
+  zoom: { k: 1, x: 0, y: 0 },
+};
+
+const PARTIES = (DATA.partie_docs || []).map(p => p.id); // ordre de build_explorer.py : P, 0, 1, 2, 3
+const passes = e => (state.types.has(e.type) || !TYPES.includes(e.type)) && (state.statuts.has(e.statut_revision) || !STATUTS.includes(e.statut_revision)) && state.parties.has(PARTIES.includes(e.partie) ? e.partie : "");
+
+// ---------- Audit ----------
+function audit() {
+  const R = [];
+  const add = (title, level, hint, items) => R.push({ title, level, hint, items });
+  // 1. Cycles
+  const color0 = new Map(), cycles = [];
+  const dfs = (v, path) => {
+    color0.set(v, 1); path.push(v);
+    for (const p of parents.get(v) || []) {
+      if (color0.get(p) === 1) cycles.push(path.slice(path.indexOf(p)).concat(p));
+      else if (!color0.get(p)) dfs(p, path);
+    }
+    path.pop(); color0.set(v, 2);
+  };
+  for (const e of els) if (!color0.get(e.id)) dfs(e.id, []);
+  add(tr("Cycles de dépendances", "Dependency cycles"), "err", tr("AGENT.md § 2.2 : aucune dépendance circulaire.", "AGENT.md § 2.2: no circular dependency."), cycles.map(c => c.map(x => pill(x)).join(" → ")));
+  // 2. Références manquantes
+  add(tr("Dépendances vers un élément inexistant", "Dependencies on a missing element"), "err", tr("depends_on cite un identifiant sans fichier.", "depends_on names an id with no file."),
+    els.flatMap(e => e.depends_on.filter(d => !byId.has(resolve(d))).map(d => `${pill(e.id)} ${tr("dépend de", "depends on")} <b>${esc(d)}</b>`)));
+  // 3. Démonstration ≠ depends_on
+  const demo = [];
+  for (const e of els) if (e.sections.includes("Démonstration") || e.sections.includes("Argumentation")) {
+    const deps = new Set(e.depends_on), refs = new Set(e.demo_refs.filter(r => r !== e.id && !e.contre.includes(r)));
+    const notDeclared = [...refs].filter(r => !deps.has(r)), notUsed = [...deps].filter(d => !refs.has(d));
+    if (notDeclared.length) demo.push(`${pill(e.id)} ${tr("invoque sans déclarer :", "invokes without declaring:")} ${notDeclared.map(x => pill(x)).join("")}`);
+    if (notUsed.length) demo.push(`${pill(e.id)} ${tr("déclare sans invoquer :", "declares without invoking:")} ${notUsed.map(x => pill(x)).join("")}`);
+  }
+  add(tr("Démonstration ≠ depends_on", "Demonstration ≠ depends_on"), "err", tr("AGENT.md § 5 : depends_on doit correspondre exactement aux éléments invoqués dans la démonstration ou l'argumentation.", "AGENT.md § 5: depends_on must match exactly the elements invoked in the demonstration or argument."), demo);
+  // 4. Concepts, prémisses et positions réfutées ne s'appuient pas sur des thèses
+  add(tr("Dépendances interdites", "Forbidden dependencies"), "warn", tr("AGENT.md § 3 : concepts, prémisses et positions réfutées ne s'appuient que sur des concepts ou des prémisses ; seules les thèses s'appuient sur des thèses.", "AGENT.md § 3: concepts, premises and refuted positions rest only on concepts or premises; only theses rest on theses."),
+    els.flatMap(e => e.type !== "these"
+      ? e.depends_on.filter(d => byId.has(resolve(d)) && ["these", "refutee"].includes(typeOf(resolve(d)))).map(d => `${pill(e.id)} (${e.type}) ${tr("dépend de", "depends on")} ${pill(resolve(d))} (${typeOf(resolve(d))})`) : []));
+  // 5. Pages
+  add(tr("Éléments sans repère", "Elements without a locator"), "err", tr("AGENT.md § 2 : toute affirmation renvoie à une page du livre (champ pages).", "AGENT.md § 2: every claim points to a page of the book (field pages)."),
+    els.filter(e => !e.pages.length).map(e => pill(e.id, true)));
+  add(tr("Pages hors du texte", "Pages outside the text"), "err", tr("Le texte principal va de la page 1 à la page 164.", "The main text runs from page 1 to page 164."),
+    els.flatMap(e => e.pages.filter(n => n < 1 || n > 164).map(n => `${pill(e.id)} : p. ${n}`)));
+  // 6. Citations trop longues
+  add(tr("Citations trop longues", "Quotations too long"), "err", tr("AGENT.md § 6 : une citation tient en une ou deux phrases (300 caractères au plus).", "AGENT.md § 6: a quotation is one or two sentences (300 characters at most)."),
+    els.filter(e => e.citation.length > 300).map(e => `${pill(e.id)} : ${e.citation.length} ${tr("caractères", "characters")}`));
+  // 8. Arêtes « contre »
+  add(tr("« contre » vers autre chose qu'une position réfutée", "“against” aimed at something other than a refuted position"), "err", tr("AGENT.md § 3 : le champ contre ne vise que des éléments R.", "AGENT.md § 3: the contre field targets only R elements."),
+    els.flatMap(e => refutes.get(e.id).filter(r => typeOf(r) !== "refutee").map(r => `${pill(e.id)} ${tr("contre", "against")} ${pill(r)}`)));
+  add(tr("Positions réfutées sans thèse qui les réfute", "Refuted positions with no thesis refuting them"), "warn", tr("Une position R doit être visée par au moins une thèse (champ contre).", "An R position must be targeted by at least one thesis (field contre)."),
+    els.filter(e => e.type === "refutee" && !(refutedBy.get(e.id) || []).length).map(e => pill(e.id, true)));
+  // 8 bis. Champs requis
+  add(tr("Champs manquants ou invalides", "Missing or invalid fields"), "warn", tr("AGENT.md § 5 : type, statut_revision et lien_explicite (thèses) ; une thèse a une Démonstration ou une Argumentation.", "AGENT.md § 5: type, statut_revision and lien_explicite (theses); a thesis has a Démonstration or an Argumentation."),
+    els.flatMap(e => [
+      ...(!STATUTS.includes(e.statut_revision) ? [`${pill(e.id)} : statut_revision « ${esc(e.statut_revision ?? "vide")} »`] : []),
+      ...(!TYPES.includes(e.type) ? [`${pill(e.id)} : type « ${esc(e.type)} »`] : []),
+      ...(e.type === "these" && typeof e.lien_explicite !== "boolean" ? [`${pill(e.id)} : lien_explicite absent`] : []),
+      ...(e.type === "these" && !e.sections.includes("Démonstration") && !e.sections.includes("Argumentation") ? [`${pill(e.id)} : ni Démonstration ni Argumentation`] : []),
+      ...(!e.enonce ? [`${pill(e.id)} : énoncé vide`] : []),
+    ]));
+  // 9. INDEX ↔ fichiers
+  const idx = new Set(DATA.index_ids);
+  add(tr("Cohérence INDEX.md ↔ fichiers", "INDEX.md ↔ files consistency"), "warn", tr("AGENT.md § 4 : INDEX.md mis à jour à chaque ajout, modification ou retrait.", "AGENT.md § 4: INDEX.md is updated on every addition, change or removal."), [
+    // Un corollaire (A10-C1) est rédigé dans le fichier de son parent (AGENT.md § 3) : il n'a pas de fichier propre.
+    ...DATA.index_ids.filter(i => !byId.has(i) && !els.some(e => e.corollaires.includes(i))).map(i => `<b>${esc(i)}</b> ${tr("listé dans INDEX.md sans fichier ni déclaration dans un fichier parent", "listed in INDEX.md with no file and no declaration in a parent file")}`),
+    ...els.filter(e => !idx.has(e.id)).map(e => `${pill(e.id)} ${tr("absent de INDEX.md", "missing from INDEX.md")}`),
+  ]);
+  // 10. Prémisses et concepts inutilisés
+  add(tr("Concepts et prémisses que rien ne mobilise", "Concepts and premises nothing uses"), "info", tr("Un concept ou une prémisse sans dépendant est peut-être superflu.", "A concept or premise with no dependent may be superfluous."),
+    els.filter(e => ["definition", "auteur", "etude"].includes(e.type) && !children.get(e.id).length).map(e => pill(e.id, true)));
+  // 11. Liens reconstruits
+  add(tr("Thèses à lien reconstruit", "Theses with reconstructed links"), "info", tr("lien_explicite: false — la dépendance n'est pas faite par Ridgeway elle-même ; à relire contre le texte.", "lien_explicite: false — Ridgeway does not make the link herself; to be checked against the text."),
+    els.filter(e => e.lien_explicite === false).map(e => pill(e.id, true)));
+  // 12. Mentions hors depends_on
+  add(tr("Mentions dans le texte hors depends_on", "Mentions in the text outside depends_on"), "info", tr("Identifiants cités dans le corps mais non déclarés comme dépendances (renvois, anticipations…). À relire, pas forcément une erreur.", "Ids cited in the body but not declared as dependencies (cross-references, anticipations…). To be reread, not necessarily an error."),
+    els.flatMap(e => { const x = e.mentions.map(resolve).filter(m => m !== e.id && !e.depends_on.includes(m)); return x.length ? [`${pill(e.id)} ${tr("mentionne", "mentions")} ${[...new Set(x)].map(y => pill(y)).join("")}`] : []; }));
+  // 12 bis. Version anglaise
+  add(tr("Traduction anglaise manquante ou incomplète", "Missing or incomplete English translation"), "warn", tr("Chaque élément a titre_en, enonce_en et un corps anglais après <!-- en -->, qui invoque les mêmes éléments que le corps français.", "Each element has titre_en, enonce_en and an English body after <!-- en -->, invoking the same elements as the French body."),
+    els.flatMap(e => {
+      const miss = [!e.titre_en && "titre_en", !e.enonce_en && "enonce_en", !e.body_en && "body_en"].filter(Boolean);
+      if (miss.length) return [`${pill(e.id)} : ${miss.join(", ")}`];
+      const fr = e.demo_refs.join(" "), en = e.demo_refs_en.join(" ");
+      return fr !== en ? [`${pill(e.id)} : ${tr("renvois", "references")} ${esc(fr)} ≠ ${esc(en)}`] : [];
+    }));
+  // 13. Problèmes de lecture
+  add(tr("Fichiers illisibles", "Unreadable files"), "err", tr("Front-matter absent ou YAML invalide.", "Missing front matter or invalid YAML."), DATA.problems.map(p => `<code>${esc(p.file)}</code> : ${esc(p.msg)}`));
+  return R;
+}
+let AUDIT, auditErrors, errorsById;
+function runAudit() {
+  AUDIT = audit();
+  auditErrors = AUDIT.filter(a => a.level === "err").reduce((n, a) => n + a.items.length, 0);
+  errorsById = new Map();
+  for (const a of AUDIT) if (a.level !== "info") for (const it of a.items) { const m = it.match(/href="#([^"]+)"/); if (m) errorsById.set(m[1], (errorsById.get(m[1]) || 0) + 1); }
+}
+runAudit();
+
+// ---------- Barre latérale ----------
+function matches(e) {
+  if (!passes(e)) return null;
+  if (!state.q) return { snip: null };
+  const q = fold(state.q);
+  if (fold(e.id + " " + e.titre + " " + e.enonce).includes(q)) return { snip: null };
+  const b = fold(e.body), k = b.indexOf(q);
+  if (k < 0) return null;
+  return { snip: e.body.slice(Math.max(0, k - 30), k + q.length + 60).replace(/\s+/g, " "), k: Math.min(30, k) };
+}
+function hlText(text) {
+  if (!state.q) return esc(text);
+  const f = fold(text), q = fold(state.q), k = f.indexOf(q);
+  return k < 0 ? esc(text) : esc(text.slice(0, k)) + "<mark>" + esc(text.slice(k, k + q.length)) + "</mark>" + esc(text.slice(k + q.length));
+}
+function renderFilters() {
+  const f = $("#filters");
+  const presentP = PARTIES.filter(p => els.some(e => e.partie === p));
+  const allP = presentP.every(p => state.parties.has(p));
+  f.innerHTML = (presentP.length ? `<div class="seg">${[`<button data-partie="all" class="${allP ? "on" : ""}" title="${tr("Toutes les parties", "All parts")}">${tr("Tout", "All")}</button>`,
+      ...presentP.map(p => `<button data-partie="${p}" class="${!allP && state.parties.has(p) ? "on" : ""}" title="${esc(partLabel(p) + " — " + DATA.parties[p] + "\n" + PART_HINT())}">${p}</button>`)].join("")}</div>` : "")
+    + TYPES.filter(t => els.some(e => e.type === t)).map(t =>
+    `<button class="chip ${state.types.has(t) ? "on" : ""}" data-type="${t}"><span class="dot" style="background:var(--${t})"></span>${TYPE_LABEL[t]}</button>`).join("")
+    + STATUTS.filter(s => els.some(e => e.statut_revision === s)).map(s =>
+    `<button class="chip ${state.statuts.has(s) ? "on" : ""}" data-statut="${s}"><span class="dot" style="background:${STATUT_COLOR[s]}"></span>${STATUT_LABEL[s]}</button>`).join("");
+  f.onclick = ev => {
+    const b = ev.target.closest(".chip, .seg button"); if (!b) return;
+    if (b.dataset.partie) return setParts(b.dataset.partie, ev.ctrlKey || ev.metaKey);
+    const set = b.dataset.type ? state.types : state.statuts, v = b.dataset.type || b.dataset.statut;
+    set.has(v) ? set.delete(v) : set.add(v);
+    renderFilters(); renderList(); renderGraph(true);
+  };
+}
+const PART_HINT = () => tr("Clic : seulement cette partie (re-clic : toutes) · Ctrl+clic : ajouter ou retirer", "Click: this part only (click again: all) · Ctrl+click: add or remove");
+// Clic : seulement cette partie (re-clic : toutes) ; Ctrl+clic : ajouter ou retirer (comme SpinozaGraph).
+function setParts(v, add) {
+  const all = [...PARTIES, ""];
+  if (v === "all") all.forEach(p => state.parties.add(p));
+  else if (add) { const full = all.every(p => state.parties.has(p)); if (full) { state.parties.clear(); state.parties.add(v); } else if (state.parties.has(v) && state.parties.size > 1) state.parties.delete(v); else state.parties.add(v); }
+  else if (state.parties.size === 1 && state.parties.has(v)) all.forEach(p => state.parties.add(p));
+  else { state.parties.clear(); state.parties.add(v); }
+  renderFilters(); renderList(); renderGraph(true);
+  // Une seule partie affichée : sa description dans le lecteur.
+  const only = [...state.parties].filter(p => p);
+  if (only.length === 1 && state.parties.size <= 2 && PARTIES.includes(only[0])) go("partie:" + only[0]);
+}
+function renderList() {
+  let h = `<button class="item ${state.view === "home" ? "sel" : ""}" data-go="home"><span class="t">${tr("Vue d'ensemble", "Overview")}</span></button>`;
+  h += `<button class="item ${state.view === "doc:PARCOURS.md" ? "sel" : ""}" data-go="doc:PARCOURS.md"><span class="t">${tr("Parcours de lecture", "Reading path")}</span></button>`;
+  h += `<button class="item ${state.view === "ordres" ? "sel" : ""}" data-go="ordres"><span class="t">${tr("Les trois ordres de croyance", "The three orders of belief")}</span></button>`;
+  h += `<button class="item ${state.view === "cycle" ? "sel" : ""}" data-go="cycle"><span class="t">${tr("Du micro au macro", "From micro to macro")}</span></button>`;
+  h += `<button class="item ${state.view === "audit" ? "sel" : ""}" data-go="audit"><span class="t">Audit</span>${auditErrors ? `<span class="badge-err">● ${auditErrors}</span>` : ""}</button>`;
+  const partOf = e => PARTIES.includes(e.partie) ? e.partie : "";
+  for (const p of [...PARTIES, ""]) {
+   if (!state.parties.has(p)) continue;
+   const inPart = els.filter(e => partOf(e) === p);
+   if (!inPart.length) continue;
+   if (PARTIES.length) h += `<div class="group" style="font-weight:700">${p ? (DATA.parties[p] === partLabel(p) ? esc(partLabel(p)) : `${partLabel(p)}. ${esc(DATA.parties[p])}`) : tr("Sans partie", "No part")}</div>`;
+   for (const t of TYPES) {
+    const rows = inPart.filter(e => e.type === t).map(e => [e, matches(e)]).filter(([, m]) => m).sort((a, b) => idSort(a[0].id, b[0].id));
+    if (!rows.length) continue;
+    h += `<div class="group">${TYPE_LABEL[t]} · ${rows.length}</div>`;
+    for (const [e, m] of rows) h += `<button class="item ${state.sel === e.id && state.view === "el" ? "sel" : ""}" data-go="${e.id}">
+      <span class="id" style="color:var(--${t})">${hlText(e.id)}</span><span class="t">${hlText(e.titre)}</span>
+      ${errorsById.get(e.id) ? `<span class="badge-err" title="${tr("Signalé par l'audit", "Flagged by the audit")}">●</span>` : ""}
+      ${m.snip ? `<span class="snip">…${hlText(m.snip)}…</span>` : ""}</button>`;
+   }
+  }
+  const docs = DATA.documents.filter(d => !state.q || fold(d.name + " " + d.body).includes(fold(state.q)));
+  if (docs.length) {
+    h += `<div class="group">${tr("Documents", "Documents")} · ${docs.length}</div>`;
+    for (const d of docs) h += `<button class="item ${state.view === "doc:" + d.name ? "sel" : ""}" data-go="doc:${esc(d.name)}"><span class="t">${esc(d.title || d.name)}</span></button>`;
+  }
+  $("#list").innerHTML = h;
+}
+$("#list").onclick = ev => { const b = ev.target.closest("[data-go]"); if (b) go(b.dataset.go); };
+$("#search").oninput = ev => { state.q = ev.target.value.trim(); renderList(); };
+
+// ---------- Graphe ----------
+const NW = 180, NH = 46, GX = 56, GY = 16;
+let layout = { pos: new Map(), w: 0, h: 0 };
+
+function visibleSet() {
+  let ids = [...els.map(e => e.id), ...missing];
+  ids = ids.filter(id => byId.has(id) ? passes(byId.get(id)) : state.types.has("manquant"));
+  const s = state.sel && (byId.has(state.sel) || missing.has(state.sel)) ? state.sel : null;
+  if (s && state.mode !== "all") {
+    const keep = new Set([s]);
+    [...(refutes.get(s) || []), ...(refutedBy.get(s) || [])].forEach(x => keep.add(x));
+    if (state.mode === "anc") closure(s, parents).forEach(x => keep.add(x));
+    if (state.mode === "desc") closure(s, children).forEach(x => keep.add(x));
+    if (state.mode === "near") [...parents.get(s), ...children.get(s)].forEach(x => keep.add(x));
+    ids = ids.filter(x => keep.has(x));
+  }
+  return new Set(ids);
+}
+// Une bande horizontale par partie (reprise de SpinozaGraph) ; dans chaque bande, colonnes par profondeur
+// (appuis internes à la partie), colonnes trop hautes coupées ; nœuds sans lien rangés en grille sous la bande.
+// Le nom des parties est dans la marge de gauche (#gutter), jamais sur le graphe.
+const ROWS = 10, HEAD = 22, GAP = 48;
+const partOfId = id => { const e = byId.get(id); if (e) return PARTIES.includes(e.partie) ? e.partie : "";
+  const c = (children.get(id) || []).map(x => byId.get(x)).find(Boolean); return c && PARTIES.includes(c.partie) ? c.partie : ""; };
+function computeLayout(vis) {
+  const part = partOfId;
+  const P = id => (parents.get(id) || []).filter(p => vis.has(p));
+  const C = id => (children.get(id) || []).filter(c => vis.has(c));
+  const Pin = id => P(id).filter(p => part(p) === part(id));
+  const Cin = id => C(id).filter(c => part(c) === part(id));
+  const depth = new Map(), onStack = new Set();
+  const d = id => {
+    if (depth.has(id)) return depth.get(id);
+    if (onStack.has(id)) return 0; // cycle : signalé par l'audit
+    onStack.add(id);
+    const v = Pin(id).reduce((m, p) => Math.max(m, d(p) + 1), 0);
+    onStack.delete(id); depth.set(id, v); return v;
+  };
+  const isolated = new Set([...vis].filter(id => !P(id).length && !C(id).length));
+  const pos = new Map(), bands = [];
+  let y0 = 0, W = 0;
+  for (const p of [...PARTIES, ""]) {
+    const ids = [...vis].filter(id => part(id) === p).sort(idSort);
+    if (!ids.length) continue;
+    const linked = ids.filter(id => !isolated.has(id));
+    linked.forEach(d);
+    const cols = [];
+    for (const id of linked) (cols[depth.get(id)] ||= []).push(id);
+    const idx = new Map();
+    const reindex = () => cols.forEach(c => c && c.forEach((id, i) => idx.set(id, i)));
+    reindex();
+    const bary = (id, nb) => { const n = nb(id); return n.length ? n.reduce((s, x) => s + idx.get(x), 0) / n.length : idx.get(id); };
+    for (let it = 0; it < 6; it++) {
+      for (let c = 1; c < cols.length; c++) if (cols[c]) { cols[c].sort((a, b) => bary(a, Pin) - bary(b, Pin) || idSort(a, b)); reindex(); }
+      for (let c = cols.length - 2; c >= 0; c--) if (cols[c]) { cols[c].sort((a, b) => bary(a, Cin) - bary(b, Cin) || idSort(a, b)); reindex(); }
+    }
+    const tallest = Math.max(0, ...cols.filter(Boolean).map(c => c.length));
+    const R = Math.max(ROWS, Math.ceil(Math.sqrt(linked.length * 1.2)));
+    const rowsUsed = Math.min(R, tallest);
+    const top = y0 + HEAD;
+    let cx = 0;
+    for (const c of cols) {
+      if (!c) continue;
+      for (let k = 0; k < c.length; k += R) {
+        const chunk = c.slice(k, k + R), off = (rowsUsed - chunk.length) * (NH + GY) / 2;
+        chunk.forEach((id, i) => pos.set(id, { x: cx * (NW + GX), y: top + off + i * (NH + GY) }));
+        cx++;
+      }
+    }
+    const iso = ids.filter(id => isolated.has(id));
+    const gridCols = Math.max(Math.min(iso.length, 6), cx, 1);
+    const sep = rowsUsed && iso.length ? 24 : 0;
+    const gy = top + rowsUsed * (NH + GY) + sep;
+    iso.forEach((id, i) => pos.set(id, { x: (i % gridCols) * (NW + GX), y: gy + Math.floor(i / gridCols) * (NH + GY) }));
+    const w = Math.max(cx, iso.length ? Math.min(iso.length, gridCols) : 0) * (NW + GX) - GX;
+    const h = HEAD + rowsUsed * (NH + GY) + sep + Math.ceil(iso.length / gridCols) * (NH + GY) + 8;
+    bands.push({ p, y: y0, h });
+    W = Math.max(W, w);
+    y0 += h + GAP;
+  }
+  return { pos, bands, w: Math.max(1, W), h: Math.max(1, y0 - GAP) };
+}
+function truncate(s, n) { return s.length > n ? s.slice(0, n - 1) + "…" : s; }
+function renderGraph(refit = false) {
+  const vis = visibleSet();
+  layout = computeLayout(vis);
+  $("#empty").style.display = vis.size ? "none" : "flex";
+  const sel = state.view === "el" ? state.sel : null;
+  const anc = sel ? closure(sel, parents) : new Set(), desc = sel ? closure(sel, children) : new Set();
+  $("#graph").classList.toggle("m-all", state.mode === "all");
+  const gB = $("#bands"), gE = $("#edges"), gN = $("#nodes");
+  gB.innerHTML = ""; gE.innerHTML = ""; gN.innerHTML = "";
+  for (const b of layout.bands) gB.append(svgEl("rect", { class: "band", x: -24, y: b.y, width: layout.w + 48, height: b.h, rx: 12, "data-partie": b.p }));
+  for (const id of vis) for (const p of parents.get(id) || []) {
+    if (!vis.has(p)) continue;
+    const a = layout.pos.get(p), b = layout.pos.get(id);
+    let dPath;
+    if (b.y >= a.y + NH + HEAD && Math.abs(b.x - a.x) < 3 * (NW + GX) || b.x <= a.x) {
+      const x1 = a.x + NW / 2, y1 = a.y + NH, x2 = b.x + NW / 2, y2 = b.y, dy = Math.max(40, (y2 - y1) / 2);
+      dPath = `M${x1},${y1} C${x1},${y1 + dy} ${x2},${y2 - dy} ${x2},${y2}`;
+    } else {
+      const x1 = a.x + NW, y1 = a.y + NH / 2, x2 = b.x, y2 = b.y + NH / 2, mx = (x1 + x2) / 2;
+      dPath = `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`;
+    }
+    let cls = "edge";
+    if (!byId.has(p)) cls += " missing";
+    if (partOfId(p) !== partOfId(id)) cls += " xpart";
+    if (sel) {
+      if ((anc.has(p) || p === sel) && (anc.has(id) || id === sel) && !desc.has(p)) cls += " anc";
+      else if ((desc.has(id) || id === sel) && (desc.has(p) || p === sel)) cls += " desc";
+      else cls += " dim";
+    }
+    gE.append(svgEl("path", { class: cls, d: dPath, "marker-end": "" }));
+  }
+  for (const id of vis) for (const r of refutes.get(id) || []) {
+    if (!vis.has(r) || !layout.pos.has(r)) continue;
+    const a = layout.pos.get(id), b = layout.pos.get(r);
+    const x1 = a.x + NW / 2, y1 = a.y + NH / 2, x2 = b.x + NW / 2, y2 = b.y + NH / 2;
+    let cls = "edge contre";
+    if (sel && sel !== id && sel !== r) cls += " dim";
+    gE.append(svgEl("path", { class: cls, d: `M${x1},${y1} Q${(x1 + x2) / 2 + 40},${(y1 + y2) / 2} ${x2},${y2}` }));
+  }
+  for (const id of vis) {
+    const e = byId.get(id), p = layout.pos.get(id);
+    const g = svgEl("g", { class: `node ${e ? "st-" + e.statut_revision : "missing"} ${id === sel ? "sel" : ""} ${sel && id !== sel && !anc.has(id) && !desc.has(id) ? "dim" : ""}`, transform: `translate(${p.x},${p.y})`, "data-id": id });
+    g.style.setProperty("--c", color(id));
+    g.append(svgEl("rect", { width: NW, height: NH, rx: 7 }));
+    g.append(svgEl("rect", { class: "bar", width: 5, height: NH - 2, x: 1, y: 1, rx: 3 }));
+    const t1 = svgEl("text", { class: "nid", x: 14, y: 19 }); t1.textContent = id; g.append(t1);
+    const t2 = svgEl("text", { x: 14, y: 36 }); t2.textContent = e ? truncate(e.titre, 24) : tr("élément manquant", "missing element"); g.append(t2);
+    if (e) g.append(svgEl("circle", { class: "status", cx: NW - 12, cy: 14, r: 5, fill: STATUT_COLOR[e.statut_revision] || "var(--err)" }));
+    if (errorsById.get(id)) { const w = svgEl("text", { x: NW - 26, y: 18, fill: "var(--err)", "font-size": 13 }); w.textContent = "!"; g.append(w); }
+    const tip = svgEl("title"); tip.textContent = e ? `${id} — ${e.titre}\n\n${e.enonce}\n\n${tr("Statut", "Status")} : ${STATUT_LABEL[e.statut_revision] || e.statut_revision}` : `${id} : ${tr("référencé mais inexistant", "referenced but missing")}`; g.append(tip);
+    gN.append(g);
+  }
+  if (refit) fit();
+  else if (sel && layout.pos.has(sel)) ensureVisible(sel);
+  renderGutter();
+}
+function applyZoom() { $("#viewport").setAttribute("transform", `translate(${state.zoom.x},${state.zoom.y}) scale(${state.zoom.k})`); renderGutter(); }
+// Marge des parties : une étiquette verticale par bande, alignée sur la bande, cliquable (filtre la partie).
+function renderGutter() {
+  const z = state.zoom, H = $("#graphwrap").getBoundingClientRect().height;
+  $("#gutter").innerHTML = (layout.bands || []).map(b => {
+    const top = Math.max(b.y * z.k + z.y, 2), bottom = Math.min((b.y + b.h) * z.k + z.y, H - 2);
+    if (bottom - top < 14) return "";
+    const title = b.p ? DATA.parties[b.p] : tr("Sans partie", "No part");
+    return `<div class="glabel" data-partie="${b.p}" style="top:${top}px;height:${bottom - top}px" title="${esc((b.p ? partLabel(b.p) + " — " : "") + title + "\n" + PART_HINT())}"><span><b>${esc(b.p || "—")}</b>${bottom - top > 40 ? ` <i>${esc(title)}</i>` : ""}</span></div>`;
+  }).join("");
+}
+$("#gutter").onclick = ev => { const g = ev.target.closest("[data-partie]"); if (g) setParts(g.dataset.partie, ev.ctrlKey || ev.metaKey); };
+// Clic hors des bandes : vue centrale (toutes les parties, graphe entier, vue d'ensemble).
+function centralView() {
+  const all = [...PARTIES, ""];
+  if (!all.every(p => state.parties.has(p))) { all.forEach(p => state.parties.add(p)); renderFilters(); renderList(); renderGraph(); }
+  fit();
+  go("home");
+}
+function fit() {
+  const r = $("#graph").getBoundingClientRect(); if (!r.width) return;
+  const pad = 60, top = 50;
+  const k = Math.min((r.width - pad * 2) / Math.max(layout.w + 48, 1), (r.height - pad - top - 40) / Math.max(layout.h, 1), 1.4);
+  state.zoom = { k, x: (r.width - layout.w * k) / 2, y: top + (r.height - top - 40 - layout.h * k) / 2 };
+  applyZoom();
+}
+function ensureVisible(id) {
+  const r = $("#graph").getBoundingClientRect(), p = layout.pos.get(id), z = state.zoom;
+  const sx = p.x * z.k + z.x, sy = p.y * z.k + z.y;
+  if (sx < 20 || sy < 50 || sx + NW * z.k > r.width - 20 || sy + NH * z.k > r.height - 20) {
+    z.x = r.width / 2 - (p.x + NW / 2) * z.k; z.y = r.height / 2 - (p.y + NH / 2) * z.k; applyZoom();
+  }
+}
+(() => {
+  const svg = $("#graph"); let drag = null, moved = false;
+  svg.addEventListener("wheel", ev => {
+    ev.preventDefault();
+    const r = svg.getBoundingClientRect(), mx = ev.clientX - r.left, my = ev.clientY - r.top, z = state.zoom;
+    const k = Math.min(3, Math.max(0.15, z.k * Math.exp(-ev.deltaY * 0.0015)));
+    z.x = mx - (mx - z.x) * k / z.k; z.y = my - (my - z.y) * k / z.k; z.k = k; applyZoom();
+  }, { passive: false });
+  svg.addEventListener("pointerdown", ev => { drag = { x: ev.clientX, y: ev.clientY, zx: state.zoom.x, zy: state.zoom.y }; moved = false; });
+  window.addEventListener("pointermove", ev => {
+    if (!drag) return;
+    const dx = ev.clientX - drag.x, dy = ev.clientY - drag.y;
+    if (Math.abs(dx) + Math.abs(dy) > 3) { moved = true; svg.classList.add("drag"); }
+    if (moved) { state.zoom.x = drag.zx + dx; state.zoom.y = drag.zy + dy; applyZoom(); }
+  });
+  window.addEventListener("pointerup", ev => {
+    if (drag && !moved) {
+      const n = ev.target.closest && ev.target.closest(".node");
+      if (n) go(n.dataset.id);
+      else if (ev.target.closest && ev.target.closest(".band")) setParts(ev.target.closest(".band").dataset.partie, ev.ctrlKey || ev.metaKey); // comme la marge
+      else if (ev.target.closest && ev.target.closest("#graph")) centralView();
+    }
+    drag = null; svg.classList.remove("drag");
+  });
+})();
+$("#toolbar").onclick = ev => {
+  const b = ev.target.closest("button"); if (!b) return;
+  if (b.dataset.mode) {
+    state.mode = b.dataset.mode;
+    document.querySelectorAll("#toolbar [data-mode]").forEach(x => x.classList.toggle("on", x === b));
+    renderGraph(true);
+  }
+};
+$("#fit").onclick = fit;
+$("#read").onclick = () => { $("#main").classList.toggle("reading"); if (!$("#main").classList.contains("reading")) fit(); };
+function renderLegend() {
+  $("#legend").innerHTML = [...TYPES.filter(t => els.some(e => e.type === t)), ...(missing.size ? ["manquant"] : [])]
+    .map(t => `<span style="--c:var(--${t})">${TYPE_LABEL[t]}</span>`).join("")
+    + tr(`<span class="dash" style="--c:var(--refutee)">contre</span><span style="--c:var(--accent)">appuis</span><span style="--c:var(--these)">conséquences</span><span class="dash" style="--c:var(--muted)" title="Appui pris dans une autre partie : visible pour l'élément sélectionné et dans les modes Chemin vers, Conséquences, Voisinage">autre partie</span>`,
+         `<span class="dash" style="--c:var(--refutee)">against</span><span style="--c:var(--accent)">grounds</span><span style="--c:var(--these)">consequences</span><span class="dash" style="--c:var(--muted)" title="Ground taken from another part: shown for the selected element and in the Path to, Consequences and Neighbours modes">other part</span>`);
+}
+(() => {
+  const rz = $("#resizer"); let on = false;
+  rz.addEventListener("pointerdown", ev => { on = true; rz.setPointerCapture(ev.pointerId); });
+  rz.addEventListener("pointermove", ev => {
+    if (!on) return;
+    const r = $("#main").getBoundingClientRect();
+    const w = Math.min(r.width - 200, Math.max(320, r.right - ev.clientX));
+    $("#main").style.setProperty("--readerW", w + "px");
+  });
+  rz.addEventListener("pointerup", () => { on = false; fit(); });
+})();
+
+// ---------- Lecteur ----------
+function renderElement(id) {
+  const e = byId.get(id);
+  const inner = $("#readerInner");
+  if (!e) {
+    inner.innerHTML = `<h1 class="title" style="--c:var(--err)"><span class="eid">${esc(id)}</span>${tr("Élément manquant", "Missing element")}</h1>
+      <p>${tr("Cet identifiant est cité comme dépendance mais aucun fichier ne le définit.", "This id is cited as a dependency but no file defines it.")}</p>
+      <div class="rel"><span class="k">${tr("Cité par", "Cited by")}</span><span>${(children.get(id) || []).map(x => pill(x, true)).join("")}</span></div>`;
+    return;
+  }
+  inner.style.setProperty("--c", color(id));
+  const anc = closure(id, parents);
+  const chainDepth = new Map();
+  const dd = x => chainDepth.has(x) ? chainDepth.get(x) : (chainDepth.set(x, 0), chainDepth.set(x, (parents.get(x) || []).reduce((m, p) => Math.max(m, dd(p) + 1), 0)), chainDepth.get(x));
+  const chain = [...anc].sort((a, b) => dd(a) - dd(b) || idSort(a, b));
+  const direct = new Set(parents.get(id));
+  const extra = [...new Set(e.mentions.map(resolve))].filter(m => m !== id && !direct.has(m));
+  const mb = (mentionedBy.get(id) || []).filter(x => !children.get(id).includes(x));
+  inner.innerHTML = `
+    <div class="crumbs">${PARTIES.includes(e.partie) ? `<a class="pill" style="--c:var(--muted)" href="#partie:${e.partie}" title="${esc(DATA.parties[e.partie])}">${partLabel(e.partie)}</a>` : ""}<span>${TYPE_SING[e.type] || e.type}</span>
+      ${seqLinks(id)}
+      <span style="margin-left:auto"></span>
+      <button data-m="anc">${tr("Chemin vers", "Path to")} ${esc(id)}</button><button data-m="desc">${tr("Conséquences", "Consequences")}</button></div>
+    <h1 class="title"><span class="eid">${esc(id)}</span>${esc(e.titre)}</h1>
+    <div class="badges">
+      <span class="badge type">${TYPE_SING[e.type] || esc(e.type)}</span>
+      <span class="badge">${tr("révision", "review")} <b style="color:${STATUT_COLOR[e.statut_revision] || "var(--err)"}">${esc(STATUT_LABEL[e.statut_revision] || e.statut_revision || "—")}</b></span>
+      ${e.pages.length ? `<span class="badge" title="${esc(locTitle(e))}"><b>${esc(pagesTxt(e))}</b></span>` : ""}
+      ${e.type === "these" && typeof e.lien_explicite === "boolean" ? `<span class="badge" title="${e.lien_explicite ? tr("Ridgeway fait elle-même ces liens", "Ridgeway makes these links herself") : tr("Dépendances reconstruites pour relier ; Ridgeway ne les fait pas explicitement", "Dependencies reconstructed to connect; Ridgeway does not make them explicitly")}">${tr("liens", "links")} <b>${e.lien_explicite ? tr("explicites", "explicit") : tr("reconstruits", "reconstructed")}</b></span>` : ""}
+    </div>
+    ${e.enonce ? `<div class="enonce">${inline(e.enonce)}</div>` : ""}
+    ${e.citation ? `<div class="citation" title="${tr("Les mots de Ridgeway", "Ridgeway's words")}">${esc(e.citation)}<span class="pg" title="${esc(locTitle(e))}">${esc(pagesTxt(e))}</span></div>` : ""}
+    <div class="rel">
+      <span class="k">${tr("Dépend de", "Depends on")}</span><span>${parents.get(id).map(x => pill(x, true)).join("") || "—"}</span>
+      ${chain.length > direct.size ? `<span class="k">${tr("Chemin complet", "Full path")}</span><span><ul class="chain">${chain.map(x => `<li style="padding-left:${dd(x) * 14}px">${pill(x, true)}</li>`).join("")}</ul></span>` : ""}
+      <span class="k">${tr("Dépendants", "Dependents")}</span><span>${children.get(id).map(x => pill(x, true)).join("") || "—"}</span>
+      ${(refutes.get(id) || []).length ? `<span class="k">${tr("Contre", "Against")}</span><span>${refutes.get(id).map(x => pill(x, true)).join("")}</span>` : ""}
+      ${(refutedBy.get(id) || []).length ? `<span class="k">${tr("Réfutée par", "Refuted by")}</span><span>${refutedBy.get(id).map(x => pill(x, true)).join("")}</span>` : ""}
+      ${extra.length ? `<span class="k">${tr("Mentionne aussi", "Also mentions")}</span><span>${extra.map(x => pill(x)).join("")}</span>` : ""}
+      ${mb.length ? `<span class="k">${tr("Mentionné par", "Mentioned by")}</span><span>${[...new Set(mb)].map(x => pill(x)).join("")}</span>` : ""}
+    </div>
+    <div class="md" id="body">${markdown(e.body)}</div>
+    <div class="file">${esc(e.file)}</div>`;
+  linkify($("#body"));
+  inner.querySelectorAll(".crumbs [data-m]").forEach(b => b.onclick = () => $(`#toolbar [data-mode="${b.dataset.m}"]`).click());
+}
+function seqLinks(id) {
+  const e = byId.get(id), same = els.filter(x => x.type === e.type).map(x => x.id).sort(idSort), i = same.indexOf(id);
+  const a = (t, arrow) => t ? `<a href="#${esc(t)}" title="${esc(byId.get(t).titre)} (${tr("touche", "key")} ${arrow === "‹" ? "[" : "]"})" style="--c:${color(t)}">${arrow === "‹" ? "‹ " + esc(t) : esc(t) + " ›"}</a>` : `<a class="off">·</a>`;
+  return `<span class="seq">${a(same[i - 1], "‹")}${a(same[i + 1], "›")}</span>`;
+}
+function stepSeq(delta) {
+  if (state.view !== "el" || !byId.has(state.sel)) return;
+  const e = byId.get(state.sel), same = els.filter(x => x.type === e.type).map(x => x.id).sort(idSort);
+  const t = same[same.indexOf(state.sel) + delta];
+  if (t) go(t);
+}
+function renderDoc(name) {
+  const d = DATA.documents.find(x => x.name === name);
+  const inner = $("#readerInner"); inner.style.removeProperty("--c");
+  if (!d) { inner.innerHTML = `<p>${tr("Document introuvable.", "Document not found.")}</p>`; return; }
+  const untranslated = LANG === "en" && !d.body_en ? `<p class="hint" style="color:var(--muted);font-size:13px">This project document is only available in French.</p>` : "";
+  inner.innerHTML = `<div class="crumbs"><span>${tr("Document du projet", "Project document")}</span></div>${untranslated}<div class="md" id="body">${markdown(d.body)}</div><div class="file">${esc(d.name)}</div>`;
+  linkify($("#body"));
+}
+function renderPartie(p) {
+  const d = (DATA.partie_docs || []).find(x => x.id === p);
+  const inner = $("#readerInner"); inner.style.removeProperty("--c");
+  if (!d) { inner.innerHTML = `<p>${tr("Partie introuvable.", "Part not found.")}</p>`; return; }
+  const mine = els.filter(e => e.partie === p);
+  const st = s => mine.filter(e => e.statut_revision === s).length;
+  const i = PARTIES.indexOf(p), prev = PARTIES[i - 1], next = PARTIES[i + 1];
+  const nav = (q, t) => q ? `<a class="pill" style="--c:var(--muted)" href="#partie:${q}">${t}</a>` : "";
+  inner.innerHTML = `<div class="crumbs"><span>${esc(partLabel(p))}${d.loc && d.loc !== "—" ? " · " + esc(d.loc) : ""}</span>${nav(prev, "‹ " + (prev ? partLabel(prev) : ""))}${nav(next, (next ? partLabel(next) : "") + " ›")}</div>
+    <h1 class="title">${esc(d.titre)}</h1>
+    ${d.resume ? `<div class="statement" style="--c:var(--accent)"><p>${esc(d.resume)}</p></div>` : ""}
+    <div class="stats">
+      ${TYPES.filter(t => mine.some(e => e.type === t)).map(t => `<div class="stat" style="--c:var(--${t})"><div class="n">${mine.filter(e => e.type === t).length}</div><div class="l">${TYPE_LABEL[t]}</div></div>`).join("")}
+      ${STATUTS.filter(s => st(s)).map(s => `<div class="stat" style="--c:${STATUT_COLOR[s]}"><div class="n">${st(s)}</div><div class="l">${STATUT_LABEL[s]}</div></div>`).join("")}
+    </div>
+    <div class="md" id="body">${markdown(d.body)}</div>
+    <div class="md"><h2>${tr("Éléments de la partie", "Elements of this part")}</h2></div>
+    ${TYPES.filter(t => mine.some(e => e.type === t)).map(t => `<div class="relsec"><h4>${TYPE_LABEL[t]} · ${mine.filter(e => e.type === t).length}</h4>${mine.filter(e => e.type === t).sort((a, b) => idSort(a.id, b.id)).map(e => pill(e.id, true)).join("")}</div>`).join("")}
+    <div class="file">${esc(d.file)}</div>`;
+  linkify($("#body"));
+}
+function renderHome() {
+  const inner = $("#readerInner"); inner.style.removeProperty("--c");
+  inner.innerHTML = `<div class="home">
+    ${LANG === "en" ? HOME_EN() : HOME_FR()}
+  </div>`;
+}
+function HOME_FR() {
+  const count = t => els.filter(e => e.type === t).length;
+  const st = s => els.filter(e => e.statut_revision === s).length;
+  return `
+    <h1 class="title"><i>Status</i> de Cecilia Ridgeway en treillis</h1>
+    <p class="md" style="font-size:15px">L'argument du livre de Cecilia L. Ridgeway, <i>Status: Why Is It Everywhere? Why Does It Matter?</i> (Russell Sage Foundation, 2019), reconstruit dans l'ordre géométrique. En haut, les prémisses : thèses d'autres auteurs (A) et résultats d'études (E) que Ridgeway reprend ; en dessous, ses concepts et ses thèses, chapitre par chapitre ; en <span style="color:var(--refutee)">rouge</span>, les positions qu'elle écarte. Les énoncés sont des reformulations ; chacun renvoie aux pages de l'édition papier. Les citations, en anglais, sont courtes.</p>
+    <p class="md" style="font-size:15px">La thèse du livre : le statut, rang d'estime accordé par les autres, est un <b>schème culturel</b> inventé pour gérer la coopération ; ses croyances sur les groupes (genre, race, classe) font de chaque rencontre un lieu où l'inégalité se reproduit et se justifie par le mérite.</p>
+    <p class="md" style="font-size:15px">Chaque flèche va d'un appui vers ce qui s'appuie sur lui ; les pointillés rouges relient une thèse à la position qu'elle écarte. Sélectionnez un élément pour lire son texte et voir en <span style="color:var(--accent)">bleu</span> le chemin qui y mène, en <span style="color:var(--these)">orange</span> ce qui en découle.</p>
+    <div class="stats">
+      ${TYPES.map(t => `<div class="stat" style="--c:var(--${t})"><div class="n">${count(t)}</div><div class="l">${TYPE_LABEL[t]}</div></div>`).join("")}
+      <div class="stat"><div class="n">${els.reduce((n, e) => n + parents.get(e.id).length, 0)}</div><div class="l">Dépendances</div></div>
+      ${STATUTS.map(s => `<div class="stat" style="--c:${STATUT_COLOR[s]}"><div class="n">${st(s)}</div><div class="l">${STATUT_LABEL[s]}</div></div>`).join("")}
+      <div class="stat" style="--c:var(--err)"><div class="n">${auditErrors}</div><div class="l">Erreurs d'audit</div></div>
+    </div>
+    <p class="md" style="font-size:15px">Pour commencer : le <a href="#doc:PARCOURS.md">parcours de lecture</a>, en seize étapes ; la vue des <a href="#ordres">trois ordres de croyance</a> ; le <a href="#cycle">cycle du micro au macro</a>.</p>
+    <div class="md"><h2>Droits</h2></div>
+    <p style="font-size:13px">Le livre de Cecilia Ridgeway (Russell Sage Foundation, 2019) est sous droits : ce treillis le reformule et n'en cite que de courts passages, avec leur page ; il n'en reproduit pas le texte. Les citations restent à leurs ayants droit ; le reste est sous CC BY-SA 4.0 (le code sous GPL-3.0). Détails : <a href="#doc:NOTICE.md">sources, droits et mentions</a>. Pour lire Ridgeway, lisez Ridgeway.</p>
+    <div class="md"><h2>Raccourcis</h2></div>
+    <p style="font-size:13px;line-height:1.9"><span class="kbd">/</span> rechercher · <span class="kbd">F</span> recadrer · <span class="kbd">R</span> mode lecture · <span class="kbd">1</span>–<span class="kbd">4</span> modes du graphe · <span class="kbd">Échap</span> désélectionner · <span class="kbd">Alt+←</span> <span class="kbd">Alt+→</span> ou <span class="kbd">⌫</span> historique · <span class="kbd">[</span> <span class="kbd">]</span> élément précédent / suivant du même type · molette : zoom · glisser : déplacer</p>
+    <div class="md"><h2>Mise à jour</h2></div>
+    <p style="font-size:13px">Ce fichier est généré. Après modification des textes : <code>python outils/build_explorer.py</code> (ou <code>--watch</code> pour régénérer automatiquement), puis rechargez la page.</p>`;
+}
+function HOME_EN() {
+  const count = t => els.filter(e => e.type === t).length;
+  const st = s => els.filter(e => e.statut_revision === s).length;
+  return `
+    <h1 class="title">Cecilia Ridgeway's <i>Status</i> as a lattice</h1>
+    <p class="md" style="font-size:15px">The argument of Cecilia L. Ridgeway's book, <i>Status: Why Is It Everywhere? Why Does It Matter?</i> (Russell Sage Foundation, 2019), reconstructed in geometrical order. At the top, the premises: theses of other authors (A) and findings of studies (E) that Ridgeway takes up; below, her concepts and theses, chapter by chapter; in <span style="color:var(--refutee)">red</span>, the positions she rejects. Statements are paraphrases; each points to the pages of the print edition. Quotations are short and in Ridgeway's own words.</p>
+    <p class="md" style="font-size:15px">This English version translates a reconstruction first written in French. The book's thesis: status, a rank of esteem granted by others, is a <b>cultural schema</b> invented to manage cooperation; its beliefs about groups (gender, race, class) make each encounter a site where inequality is reproduced and justified by merit.</p>
+    <p class="md" style="font-size:15px">Each arrow runs from a ground to what rests on it; red dotted lines link a thesis to the position it rejects. Select an element to read its text and see in <span style="color:var(--accent)">blue</span> the path leading to it, in <span style="color:var(--these)">orange</span> what follows from it.</p>
+    <div class="stats">
+      ${TYPES.map(t => `<div class="stat" style="--c:var(--${t})"><div class="n">${count(t)}</div><div class="l">${TYPE_LABEL[t]}</div></div>`).join("")}
+      <div class="stat"><div class="n">${els.reduce((n, e) => n + parents.get(e.id).length, 0)}</div><div class="l">Dependencies</div></div>
+      ${STATUTS.map(s => `<div class="stat" style="--c:${STATUT_COLOR[s]}"><div class="n">${st(s)}</div><div class="l">${STATUT_LABEL[s]}</div></div>`).join("")}
+      <div class="stat" style="--c:var(--err)"><div class="n">${auditErrors}</div><div class="l">Audit errors</div></div>
+    </div>
+    <p class="md" style="font-size:15px">To begin: the <a href="#doc:PARCOURS.md">reading path</a>, in sixteen steps; the view of the <a href="#ordres">three orders of belief</a>; the <a href="#cycle">cycle from micro to macro</a>.</p>
+    <div class="md"><h2>Rights</h2></div>
+    <p style="font-size:13px">Cecilia Ridgeway's book (Russell Sage Foundation, 2019) is under copyright: this lattice paraphrases it and quotes only short passages, with their page; it does not reproduce its text. The quotations remain with their rights holders; the rest is under CC BY-SA 4.0 (the code under GPL-3.0). Details: <a href="#doc:NOTICE.md">sources, rights and credits</a>. To read Ridgeway, read Ridgeway.</p>
+    <div class="md"><h2>Shortcuts</h2></div>
+    <p style="font-size:13px;line-height:1.9"><span class="kbd">/</span> search · <span class="kbd">F</span> fit · <span class="kbd">R</span> reading mode · <span class="kbd">1</span>–<span class="kbd">4</span> graph modes · <span class="kbd">Esc</span> deselect · <span class="kbd">Alt+←</span> <span class="kbd">Alt+→</span> or <span class="kbd">⌫</span> history · <span class="kbd">[</span> <span class="kbd">]</span> previous / next element of the same type · wheel: zoom · drag: pan</p>
+    <div class="md"><h2>Updating</h2></div>
+    <p style="font-size:13px">This file is generated. After editing the texts: <code>python outils/build_explorer.py</code> (or <code>--watch</code> to rebuild automatically), then reload the page.</p>`;
+}
+// Vue : les trois ordres de croyance (D09, D10, T012, T024, T032, T052).
+function renderOrdres() {
+  const inner = $("#readerInner"); inner.style.removeProperty("--c");
+  const P = ids => ids.filter(id => byId.has(id)).map(id => pill(id, true)).join("");
+  const fr = LANG !== "en";
+  const rows = fr ? [
+    ["var(--muted)", "Premier ordre : ce que je pense", "« Je pense que tu es meilleur que moi à cela. » Mes propres attentes sur ma compétence et celle des autres (p. 39). Une hiérarchie n'exige pas qu'elles concordent : les désaccords à ce niveau sont fréquents (p. 41).", ["D09", "R07"]],
+    ["var(--accent)", "Second ordre : ce que je pense que les autres pensent", "« Je pense qu'ils pensent que tu es meilleur que moi. » C'est le consensus qui gouverne la hiérarchie (p. 39-42). Quand il contredit le premier ordre, c'est lui qui guide la conduite (p. 40-41) ; il fonde la stabilité (p. 65-66) et la légitimité (p. 117).", ["T012", "E10", "E11", "T021", "T041"]],
+    ["var(--these)", "Troisième ordre : ce que pense « la plupart des gens »", "Les croyances de statut portent sur l'opinion de la communauté (p. 71). On doit en tenir compte qu'on y adhère ou non : c'est leur force (p. 72). Elles font préférer le choix le plus « vendable » (p. 95), et même les groupes qu'elles défavorisent les partagent (p. 144).", ["D10", "T024", "T025", "T032", "E33", "E52"]],
+  ] : [
+    ["var(--muted)", "First order: what I think", "“I think you are better than me at this.” My own expectations about my competence and others’ (p. 39). A hierarchy does not require them to agree: disagreements at this level are common (p. 41).", ["D09", "R07"]],
+    ["var(--accent)", "Second order: what I think others think", "“I think they think you are better than me.” This is the consensus that governs the hierarchy (p. 39-42). When it contradicts the first order, it is what guides behaviour (p. 40-41); it grounds stability (p. 65-66) and legitimacy (p. 117).", ["T012", "E10", "E11", "T021", "T041"]],
+    ["var(--these)", "Third order: what “most people” think", "Status beliefs bear on the community’s opinion (p. 71). One must take them into account whether or not one endorses them: that is their force (p. 72). They lead people to favour the most “sellable” choice (p. 95), and even the groups they disfavour share them (p. 144).", ["D10", "T024", "T025", "T032", "E33", "E52"]],
+  ];
+  inner.innerHTML = `<div class="regimes">
+    <h1 class="title">${tr("Les trois ordres de croyance", "The three orders of belief")}</h1>
+    <p class="md" style="font-size:15px">${tr("Le ressort du livre : le statut ne tient pas à ce que chacun pense, mais à ce que chacun pense que les autres pensent. Ridgeway distingue trois niveaux.", "The book’s mainspring: status does not rest on what each person thinks, but on what each thinks others think. Ridgeway distinguishes three levels.")}</p>
+    <ol class="timeline">
+      ${rows.map(([c, t, d, ids]) => `<li style="--c:${c}"><b>${t}</b><br>${d}<br>${P(ids)}</li>`).join("")}
+    </ol>
+    <div class="md"><h2>${tr("Pourquoi cela compte", "Why it matters")}</h2></div>
+    <p class="md" style="font-size:15px">${tr("Parce que la hiérarchie et les croyances reposent sur le second et le troisième ordre, on peut agir selon une croyance qu'on n'endosse pas, et la faire durer par là même. Quand l'adhésion personnelle recule sans que chacun le sache, on entre dans une « ignorance plurielle » fragile : c'est par là que les croyances changent (p. 71-72, 142-143).", "Because the hierarchy and beliefs rest on the second and third orders, one can act on a belief one does not endorse, and thereby make it last. When personal endorsement declines without everyone knowing it, a fragile “pluralistic ignorance” sets in: that is how beliefs change (p. 71-72, 142-143).")}</p>
+    <div class="relsec">${P(["T052", "T060"])}</div>
+  </div>`;
+  linkify(inner);
+}
+// Vue : du micro au macro, et retour (chapitres 2 à 6).
+function renderCycle() {
+  const inner = $("#readerInner"); inner.style.removeProperty("--c");
+  const P = ids => ids.filter(id => byId.has(id)).map(id => pill(id, true)).join("");
+  const fr = LANG !== "en";
+  const steps = fr ? [
+    ["var(--definition)", "L'interdépendance", "On doit coopérer pour un but, et l'on se dispute les termes de la coopération (p. 2-3).", ["D03", "T001"]],
+    ["var(--accent)", "La norme fondamentale", "Chacun a intérêt à ce que les autres défèrent à la compétence perçue ; les tiers la font respecter (p. 29-37).", ["T008", "T009", "T010"]],
+    ["var(--accent)", "Les croyances de statut", "Pour savoir ce que les autres tiendront pour compétence, on puise dans des croyances sur les groupes (p. 37-38, 69).", ["T011", "T022", "T024"]],
+    ["var(--these)", "Des attentes biaisées dans chaque rencontre", "Genre, race et classe cadrent les attentes de performance, qui se réalisent (p. 100-111).", ["T034", "T036", "T037"]],
+    ["var(--these)", "Trois biais qui s'accumulent", "Biais de statut, de légitimité, de préférence associative : petits à chaque fois, considérables sur une vie (p. 121-123).", ["T044"]],
+    ["var(--refutee)", "Un accès inégal aux ressources et au pouvoir", "Dans le travail, l'école, la santé, et jusque dans les pratiques des organisations (p. 129-135).", ["T047", "T048", "T049"]],
+    ["var(--refutee)", "La consolidation", "L'avantage individuel devient droit fondé sur l'identité de groupe (p. 127-129).", ["T046"]],
+    ["var(--etude)", "La légitimation", "Les dominants semblent avoir mérité leurs avantages ; les dominés « suivent » ; et l'on nie le statut lui-même (p. 143-149).", ["T053", "T054", "T055"]],
+    ["var(--accent)", "Retour aux croyances", "Hiérarchies et richesses fournissent la preuve apparente de la supériorité des groupes favorisés, qui renforce les croyances (p. 81, 141-142).", ["T027", "T052"]],
+  ] : [
+    ["var(--definition)", "Interdependence", "People must cooperate towards a goal, and they contend over the terms of cooperation (p. 2-3).", ["D03", "T001"]],
+    ["var(--accent)", "The basic norm", "Each has an interest in others deferring to perceived competence; third parties enforce it (p. 29-37).", ["T008", "T009", "T010"]],
+    ["var(--accent)", "Status beliefs", "To know what others will take as competence, people draw on beliefs about groups (p. 37-38, 69).", ["T011", "T022", "T024"]],
+    ["var(--these)", "Biased expectations in every encounter", "Gender, race and class frame performance expectations, which fulfil themselves (p. 100-111).", ["T034", "T036", "T037"]],
+    ["var(--these)", "Three biases that accumulate", "Status, legitimacy and associational preference biases: small each time, large over a lifetime (p. 121-123).", ["T044"]],
+    ["var(--refutee)", "Unequal access to resources and power", "At work, at school, in health care, and down to organisational practices (p. 129-135).", ["T047", "T048", "T049"]],
+    ["var(--refutee)", "Consolidation", "Individual advantage becomes a right based on group identity (p. 127-129).", ["T046"]],
+    ["var(--etude)", "Legitimation", "The dominant seem to have earned their advantages; the dominated “go along”; and status itself is denied (p. 143-149).", ["T053", "T054", "T055"]],
+    ["var(--accent)", "Back to beliefs", "Hierarchies and wealth provide apparent proof of the favoured groups’ superiority, which reinforces the beliefs (p. 81, 141-142).", ["T027", "T052"]],
+  ];
+  inner.innerHTML = `<div class="regimes">
+    <h1 class="title">${tr("Du micro au macro, et retour", "From micro to macro, and back")}</h1>
+    <p class="md" style="font-size:15px">${tr("Le chemin du livre, de l'interaction dans un groupe à la structure de l'inégalité, et le retour qui rend cette inégalité durable.", "The book’s path, from interaction in a group to the structure of inequality, and the return that makes this inequality durable.")}</p>
+    <ol class="timeline">
+      ${steps.map(([c, t, d, ids], i) => `<li style="--c:${c}"><b>${i + 1}. ${t}</b><br>${d}<br>${P(ids)}</li>`).join("")}
+    </ol>
+    <div class="md"><h2>${tr("Où le cycle peut se rompre", "Where the cycle can break")}</h2></div>
+    <p class="md" style="font-size:15px">${tr("Les croyances de statut changent quand leur apparence de consensus s'érode et que les écarts de compétence qu'elles impliquent se réduisent ; on peut aussi, individuellement, surmonter un désavantage, mais pas à armes égales (p. 119-120, 142-143, 162-163).", "Status beliefs change when their appearance of consensus erodes and the competence differences they imply narrow; individuals can also overcome a disadvantage, but not on equal terms (p. 119-120, 142-143, 162-163).")}</p>
+    <div class="relsec">${P(["T043", "T052", "T060"])}</div>
+  </div>`;
+  linkify(inner);
+}
+function renderAudit() {
+  const inner = $("#readerInner"); inner.style.removeProperty("--c");
+  inner.innerHTML = `<div class="audit"><h1 class="title">${tr("Audit automatique", "Automatic audit")}</h1>
+    <p class="hint">${tr("Contrôles mécaniques (AGENT.md § 8). Ils ne remplacent pas l'audit de fidélité : chaque élément relu contre le passage cité.", "Mechanical checks (AGENT.md § 8). They do not replace the fidelity audit: each element reread against the passage cited.")}</p>
+    ${AUDIT.map(a => `<h3>${esc(a.title)} <span class="count ${a.items.length ? a.level : "ok"}">${a.items.length || "✓"}</span></h3>
+      <p class="hint">${esc(a.hint)}</p>${a.items.length ? `<ul>${a.items.map(i => `<li>${i}</li>`).join("")}</ul>` : ""}`).join("")}</div>`;
+}
+
+// ---------- Routage ----------
+// ---------- Historique (synchronisé avec celui du navigateur) ----------
+const HKEY = "explorer-history";
+let hist = { stack: [], i: -1 };
+try { hist = JSON.parse(sessionStorage.getItem(HKEY)) || hist; } catch {}
+function track(h) {
+  const st = history.state;
+  if (st && typeof st.i === "number" && hist.stack[st.i] === h) hist.i = st.i;      // précédent / suivant / rechargement
+  else if (hist.stack[hist.i] !== h) {                                               // nouvelle visite
+    hist.stack = hist.stack.slice(0, hist.i + 1); hist.stack.push(h); hist.i = hist.stack.length - 1;
+    if (hist.stack.length > 200) { hist.stack.shift(); hist.i--; }
+    history.replaceState({ i: hist.i }, "");
+  } else history.replaceState({ i: hist.i }, "");
+  try { sessionStorage.setItem(HKEY, JSON.stringify(hist)); } catch {}
+  renderTrail();
+}
+function label(h) {
+  if (h === "home") return { t: tr("Vue d'ensemble", "Overview") };
+  if (h === "audit") return { t: "Audit" };
+  if (h === "ordres") return { t: tr("Les trois ordres de croyance", "The three orders of belief") };
+  if (h === "cycle") return { t: tr("Du micro au macro", "From micro to macro") };
+  if (h.startsWith("doc:")) return { t: h.slice(4) };
+  if (h.startsWith("partie:")) return { t: partLabel(h.slice(7)) };
+  return { id: h, t: byId.get(h)?.titre || tr("manquant", "missing"), c: color(h) };
+}
+function renderTrail() {
+  $("#back").disabled = hist.i <= 0;
+  $("#fwd").disabled = hist.i >= hist.stack.length - 1;
+  const from = Math.max(0, hist.i - 7), to = Math.min(hist.stack.length, hist.i + 3);
+  const steps = [];
+  for (let k = from; k < to; k++) {
+    const L = label(hist.stack[k]), cur = k === hist.i;
+    steps.push(`<button class="step ${cur ? "cur" : ""} ${k > hist.i ? "fwd" : ""}" data-k="${k}" ${L.c ? `style="--c:${L.c}"` : ""} title="${esc((L.id ? L.id + " — " : "") + L.t)}">${L.id ? esc(L.id) + (cur ? `<span class="tt">${esc(L.t)}</span>` : "") : esc(L.t)}</button>`);
+  }
+  $("#trail").innerHTML = hist.stack.length > 1 ? `<span class="lbl">${from > 0 ? "… " : ""}${tr("Historique", "History")}</span>` + steps.join(`<span class="arrow">›</span>`) : "";
+}
+// Aller à une page : si c'est la page précédente (ou suivante) de l'historique,
+// s'y déplacer au lieu de créer une nouvelle entrée.
+function go(h) {
+  h = String(h || "home");
+  if (hist.stack[hist.i] === h) return;
+  if (hist.i > 0 && hist.stack[hist.i - 1] === h) history.back();
+  else if (hist.stack[hist.i + 1] === h) history.forward();
+  else location.hash = h;
+}
+document.addEventListener("click", ev => {
+  if (ev.button !== 0 || ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.altKey) return;
+  const a = ev.target.closest && ev.target.closest('a[href^="#"]');
+  if (!a) return;
+  ev.preventDefault();
+  go(decodeURIComponent(a.getAttribute("href").slice(1)));
+});
+$("#back").onclick = () => history.back();
+$("#fwd").onclick = () => history.forward();
+$("#trail").onclick = ev => { const b = ev.target.closest("[data-k]"); if (b) { const d = +b.dataset.k - hist.i; if (d) history.go(d); } };
+
+function route() {
+  const h = decodeURIComponent(location.hash.slice(1)) || "home";
+  track(h);
+  const prevSel = state.sel;
+  renderView(h);
+  $("#reader").scrollTop = 0;
+  renderList();
+  renderGraph(state.mode !== "all" && prevSel !== state.sel);
+  document.querySelector("#list .sel")?.scrollIntoView({ block: "nearest" });
+}
+function renderView(h) {
+  if (h === "home") { state.view = "home"; state.sel = null; renderHome(); }
+  else if (h === "audit") { state.view = "audit"; state.sel = null; renderAudit(); }
+  else if (h === "ordres") { state.view = "ordres"; state.sel = null; renderOrdres(); }
+  else if (h === "cycle") { state.view = "cycle"; state.sel = null; renderCycle(); }
+  else if (h.startsWith("doc:")) { state.view = "doc:" + h.slice(4); state.sel = null; renderDoc(h.slice(4)); }
+  else if (h.startsWith("partie:")) { state.view = h; state.sel = null; renderPartie(h.slice(7)); }
+  else { state.view = "el"; state.sel = h; renderElement(h); }
+}
+window.addEventListener("hashchange", route);
+window.addEventListener("resize", () => fit());
+document.addEventListener("keydown", ev => {
+  if (ev.altKey || ev.ctrlKey || ev.metaKey) return;
+  if (ev.target.matches?.("input")) { if (ev.key === "Escape") { ev.target.value = ""; state.q = ""; renderList(); ev.target.blur(); } return; }
+  if (ev.key === "/") { ev.preventDefault(); $("#search").focus(); }
+  else if (ev.key === "Escape") go("home");
+  else if (ev.key === "[") stepSeq(-1);
+  else if (ev.key === "]") stepSeq(1);
+  else if (ev.key === "Backspace") history.back();
+  else if (ev.key === "f" || ev.key === "F") fit();
+  else if (ev.key === "r" || ev.key === "R") $("#read").click();
+  else if ("1234".includes(ev.key)) document.querySelectorAll("#toolbar [data-mode]")[+ev.key - 1].click();
+});
+
+// Textes fixes de l'interface, et bascule de langue.
+function applyStatic() {
+  document.documentElement.lang = LANG;
+  document.title = tr("Status (Ridgeway) — treillis", "Status (Ridgeway) — lattice");
+  $("#back").title = tr("Précédent (Alt+←)", "Back (Alt+←)");
+  $("#fwd").title = tr("Suivant (Alt+→)", "Forward (Alt+→)");
+  $("#search").placeholder = tr("Rechercher (id, titre, texte) — touche /", "Search (id, title, text) — key /");
+  const modes = { all: ["Tout", "All", "Tout le graphe ; la sélection met en évidence ses appuis et ses conséquences", "Whole graph; the selection highlights its grounds and consequences"],
+    anc: ["Chemin vers", "Path to", "Seulement le chemin qui mène à l'élément sélectionné", "Only the path leading to the selected element"],
+    desc: ["Conséquences", "Consequences", "Seulement ce qui découle de l'élément sélectionné", "Only what follows from the selected element"],
+    near: ["Voisinage", "Neighbours", "Voisins directs", "Direct neighbours"] };
+  for (const [m, [f, en, tf, ten]] of Object.entries(modes)) { const x = $(`#toolbar [data-mode="${m}"]`); x.textContent = tr(f, en); x.title = tr(tf, ten); }
+  $("#fit").textContent = tr("Recadrer", "Fit"); $("#fit").title = tr("Recadrer (touche F)", "Fit (key F)");
+  $("#read").textContent = tr("Lecture", "Read"); $("#read").title = tr("Masquer le graphe pour lire (touche R)", "Hide the graph to read (key R)");
+  $("#empty").textContent = tr("Aucun élément à afficher avec ces filtres.", "No element to show with these filters.");
+  $("#resizer").title = tr("Glisser pour redimensionner", "Drag to resize");
+  $("#meta").textContent = tr(`${els.length} éléments · généré le ${DATA.generated}`, `${els.length} elements · generated ${DATA.generated}`);
+  document.querySelectorAll(".langsw [data-lang]").forEach(x => { x.classList.toggle("on", x.dataset.lang === LANG); x.setAttribute("aria-pressed", x.dataset.lang === LANG); });
+  renderLegend();
+}
+function setLang(l) {
+  if (!LANGS.includes(l) || l === LANG) return;
+  LANG = l;
+  try { localStorage.setItem("treillis-lang", l); } catch {}
+  const u = new URL(location.href); u.searchParams.set("lang", l);
+  history.replaceState(history.state, "", u.pathname + u.search + u.hash);
+  applyData(); setLabels(); runAudit(); applyStatic();
+  renderFilters(); renderTrail(); renderView(decodeURIComponent(location.hash.slice(1)) || "home"); renderList(); renderGraph();
+}
+document.querySelector(".langsw").onclick = ev => { const x = ev.target.closest("[data-lang]"); if (x) setLang(x.dataset.lang); };
+applyStatic();
+renderFilters();
+route();
+requestAnimationFrame(fit);
+</script>
+</body>
+</html>

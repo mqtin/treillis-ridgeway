@@ -1,0 +1,34 @@
+treillis-ridgeway — licences / licenses
+
+Ce dépôt contient des éléments sous des régimes différents. Voir NOTICE.md.
+This repository contains material under different terms. See NOTICE.md.
+
+1. Code (outils/, et le JavaScript/CSS d'explorer.html)
+   GNU General Public License, version 3 (GPL-3.0-only).
+   Texte complet : LICENSES/GPL-3.0.txt
+
+2. Travail de reconstruction (definitions/, premisses/, theses/, refutees/,
+   parties/, PARCOURS.md, PARCOURS.en.md, NOTICE.en.md, INDEX.md, AGENT.md,
+   README.md et les données intégrées à explorer.html), POUR LA SEULE PART
+   QUI EST DE L'AUTEUR DU PROJET : énoncés reformulés, démonstrations
+   reconstruites, découpage, dépendances, commentaires, et leur traduction.
+   Creative Commons Attribution - Partage dans les mêmes conditions 4.0
+   International (CC-BY-SA-4.0).
+   Texte complet : LICENSES/CC-BY-SA-4.0.txt
+
+3. NE SONT PAS COUVERTS par ces licences et restent la propriété de leurs
+   ayants droit :
+   - les citations de Cecilia L. Ridgeway, *Status: Why Is It Everywhere?
+     Why Does It Matter?*, Russell Sage Foundation, 2019 (passages entre
+     guillemets, champ `citation`), ainsi que les titres de ses chapitres ;
+   - les citations d'autres auteurs rapportées par Ridgeway.
+   Elles figurent ici au titre du droit de courte citation (Code de la
+   propriété intellectuelle, art. L122-5, 3°), à des fins d'analyse, avec
+   leur source. Toute réutilisation doit respecter ce cadre ou obtenir
+   l'autorisation des ayants droit.
+
+4. Le texte du livre n'est pas distribué. Le dossier source/ (fichier du
+   livre et texte extrait) est exclu du dépôt.
+
+CC BY-SA 4.0 étant compatible à sens unique avec la GPL-3.0, explorer.html
+peut, pour la part couverte par les points 1 et 2, être distribué sous GPL-3.0.
