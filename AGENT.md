@@ -46,7 +46,7 @@ definitions/      D01.md …
 premisses/        A01.md …, E01.md …
 theses/           T001.md …
 refutees/         R01.md …
-outils/           build_explorer.py, explorer_template.html, check.py, audit_citations.py, build_index.py, extract_epub.py
+outils/           build_explorer.py, explorer_template.html, check.py, audit_citations.py, audit_pages.py, build_index.py, extract_epub.py
 source/           NON VERSIONNÉ : le fichier du livre et le texte extrait (§ 6)
 explorer.html     généré
 ```
@@ -116,7 +116,7 @@ Le livre est sous droits (© Russell Sage Foundation, 2019).
 
 `python outils/check.py` vérifie : identifiants et types, pages présentes et concordantes avec le corps, longueur des citations, existence des dépendances, absence de cycle, concordance entre `depends_on` et la démonstration, arêtes `contre` vers des `R`, cohérence avec `INDEX.md`, exclusion de `source/`, complétude et concordance de la version anglaise (§ 5 bis). L'onglet « Audit » de l'explorateur affiche les mêmes contrôles.
 
-`python outils/audit_citations.py` vérifie les citations contre le livre (demande `source/texte/`).
+`python outils/audit_citations.py` vérifie les citations contre le livre ; `python outils/audit_pages.py` vérifie, page par page, que chaque citation (y compris les passages anglais du corps français), chaque auteur nommé dans une prémisse et chaque chiffre se trouvent aux pages citées (les deux demandent `source/texte/`).
 
 Aucun de ces contrôles ne remplace l'audit de fidélité.
 

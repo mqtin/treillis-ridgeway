@@ -17,6 +17,7 @@ Pour le régénérer (Python 3 et PyYAML) :
 ```
 python outils/check.py             # contrôles de cohérence
 python outils/audit_citations.py   # citations mot pour mot dans le livre (demande source/texte/)
+python outils/audit_pages.py       # citations, auteurs et chiffres aux pages citées
 python outils/build_index.py       # -> tables d'INDEX.md
 python outils/build_explorer.py    # -> explorer.html
 ```
